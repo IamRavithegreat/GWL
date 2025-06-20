@@ -5,70 +5,57 @@ import axios from "axios";
 import { toast } from "react-toastify";
 import { useAuth } from "../../contexts/auth";
 
-const ManageManager = () => {
-    const [manager, setManager] = useState({ firstname: "", lastname: "", email: "" })
+const Updateadmin = () => {
+    const[admin,setadmin]=useState({name:"",email:"",password:""})
     const location = useLocation();
-    const { managerId, manager_type } = location.state;
+    const { adminid } = location.state;
+    const { fetchloweradminData } = useAuth()
 
-    const { fetchlowermanagerData } = useAuth();
-    const { fetchmanagerData } = useAuth();
-
-    const handleUpdateManager = async (e) => {
+    const handleupdateadmin = async (e) => {
         e.preventDefault();
-
         const updatedData = {
-            firstname: manager.firstname,
-            lastname: manager.lastname,
-            email: manager.email,
+            email: admin.email,
+            name:admin.name,
+            password:admin.password
         };
 
         try {
-            const update_manager_url = manager_type == 'lower_manager' ? 'update-singleLM'
-                : manager_type == 'super_manager' ? 'superManagerProfile'
-                    : '';
-            await axios.put(`http://localhost:4000/api/${update_manager_url}/${managerId}`, updatedData, {
+            await axios.put(`http://localhost:4000/api/updateadmin/${adminid}`, updatedData, {
                 headers: {
                     "Content-Type": "application/json",
                 },
                 withCredentials: true,
             });
-            if (manager_type == 'lower_manager') {
-                fetchlowermanagerData();
-            } else {
-                fetchmanagerData();
-            }
-            setManager({
-                firstname: "",
-                lastname: "",
+            
+            setadmin({
+                name:"",
+                password:"",
                 email: "",
             });
             toast.success("Successfully updated!");
         } catch (err) {
-            const message = err.response?.manager?.message || "update failed";
+            const message = err.response?.data?.message || "update failed";
             toast.error(message);
-            console.error("update error:", err);
+            console.error(err);
         }
     };
 
-    const fetchManager = async () => {
+    const fetchadmin = async () => {
         try {
-            const get_manager_url = manager_type == 'lower_manager' ? 'getlowermanager'
-                : manager_type == 'super_manager' ? 'manager'
-                    : '';
-            const response = await axios.get(`http://localhost:4000/api/${get_manager_url}/${managerId}`);
+            const response = await axios.get(`http://localhost:4000/api/admin/${adminid}`);
             console.log(response)
-            setManager({
-                firstname: response.data.managerdata.firstname,
-                lastname: response.data.managerdata.lastname,
-                email: response.data.managerdata.email
+            setadmin({
+                name: response.data.admindata.name,
+                password:response.data.admindata.password,
+                email: response.data.admindata.email
             })
         } catch (err) {
-            console.log(`Error Fetching LowerManager Data: ${err}`);
+            console.log(err);
         }
     };
 
     useEffect(() => {
-        fetchManager()
+        fetchadmin()
     }, [])
 
 
@@ -80,23 +67,12 @@ const ManageManager = () => {
                     <div className="grid grid-cols-1 gap-4 sm:grid-cols-2">
                         {/* First and Last Name */}
                         <div className="flex flex-col">
-                            <label className="mb-1 dark:text-white">First Name</label>
+                            <label className="mb-1 dark:text-white">Name</label>
                             <input
                                 type="text"
                                 placeholder="Name"
-                                value={manager.firstname}
-                                onChange={(e) => setManager({ ...manager, firstname: e.target.value })}
-                                className="w-full appearance-none rounded border px-3 py-2 text-black shadow focus:bg-slate-50 focus:shadow focus:outline-none focus:border-red-300"
-                            />
-                        </div>
-
-                        <div className="flex flex-col">
-                            <label className="mb-1 dark:text-white">Last Name</label>
-                            <input
-                                type="text"
-                                placeholder="Last Name"
-                                value={manager.lastname}
-                                onChange={(e) => setManager({ ...manager, lastname: e.target.value })}
+                                value={admin.name}
+                                onChange={(e) => setadmin({ ...admin, name: e.target.value })}
                                 className="w-full appearance-none rounded border px-3 py-2 text-black shadow focus:bg-slate-50 focus:shadow focus:outline-none focus:border-red-300"
                             />
                         </div>
@@ -106,15 +82,26 @@ const ManageManager = () => {
                             <input
                                 type="email"
                                 placeholder="Email"
-                                value={manager.email}
-                                onChange={(e) => setManager({ ...manager, email: e.target.value })}
+                                value={admin.email}
+                                onChange={(e) => setadmin({ ...admin, email: e.target.value })}
+                                className="w-full appearance-none rounded border px-3 py-2 text-black shadow focus:bg-slate-50 focus:shadow focus:outline-none focus:border-red-300"
+                            />
+                        </div>
+
+                        <div className="flex flex-col">
+                            <label className="mb-1 dark:text-white">Email</label>
+                            <input
+                                type="text"
+                                placeholder="Password"
+                                value={admin.password}
+                                onChange={(e) => setadmin({ ...admin, password: e.target.value })}
                                 className="w-full appearance-none rounded border px-3 py-2 text-black shadow focus:bg-slate-50 focus:shadow focus:outline-none focus:border-red-300"
                             />
                         </div>
                     </div>
                     <div className="mt-6">
                         <button
-                            onClick={handleUpdateManager}
+                            onClick={handleupdateadmin}
                             className="rounded bg-blue-600 px-6 py-2 text-white transition hover:bg-blue-700">Submit</button>
                     </div>
                 </form>
@@ -124,4 +111,4 @@ const ManageManager = () => {
     );
 };
 
-export default ManageManager;
+export default Updateadmin;

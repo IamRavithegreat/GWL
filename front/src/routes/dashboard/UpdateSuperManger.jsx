@@ -1,9 +1,9 @@
 import React, { useEffect, useRef, useState } from "react";
 import { Footer } from "@/layouts/footer";
+import axios from "axios";
 import { toast } from "react-toastify";
 import { useAuth } from "../../contexts/auth";
 import { useLocation } from "react-router-dom";
-import API from "../../API/Api";
 const UpdateSuperManger = () => {
     const { fetchallmanager } = useAuth();
     const location = useLocation();
@@ -44,7 +44,7 @@ const UpdateSuperManger = () => {
         };
 
         try {
-           await API.put(`/update-manager/${data.managerid}`, updatedData, {
+            const response = await axios.put(`http://localhost:4000/api/update-manager/${data.managerid}`, updatedData, {
                 headers: {
                     "Content-Type": "application/json",
                 },
@@ -61,7 +61,7 @@ const UpdateSuperManger = () => {
             await fetchallmanager();
             toast.success("Successfully updated!");
         } catch (err) {
-            const message = err.response?.data?.message || "Signup failed";
+            const message = err.response?.data?.extradetails || err.response?.data?.message || "Signup failed";
             toast.error(message);
             console.error("update error:", err);
         }
@@ -69,7 +69,7 @@ const UpdateSuperManger = () => {
 
     const fetchmanagerData = async () => {
         try {
-            const response = await API.get(`/manager/${supermanagerid}`, {
+            const response = await axios.get(`http://localhost:4000/api/manager/${supermanagerid}`, {
                 headers: {
                     "Content-Type": "application/json",
                 },

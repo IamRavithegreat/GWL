@@ -1,9 +1,9 @@
 import React, { useEffect, useState } from "react";
 import { Footer } from "@/layouts/footer";
 import { useLocation } from "react-router-dom";
+import axios from "axios";
 import { toast } from "react-toastify";
 import { useAuth } from "../../contexts/auth";
-import API from "../../API/Api";
  
 const ManageSuperManager = () => {
     const [superManager, setSuperManager] = useState({ firstname: "", lastname: "", email: "" })
@@ -21,7 +21,7 @@ const ManageSuperManager = () => {
         };
  
         try {
-            await API.put(`/superManagerProfile/${managerId}`, updatedData, {
+            await axios.put(`http://localhost:4000/api/superManagerProfile/${managerId}`, updatedData, {
                 headers: {
                     "Content-Type": "application/json",
                 },
@@ -43,7 +43,7 @@ const ManageSuperManager = () => {
  
     const fetchSuperManager = async () => {
         try {
-            const response = await API.get(`/manager/${managerId}`);
+            const response = await axios.get(`http://localhost:4000/api/manager/${managerId}`);
             setSuperManager({
                 firstname: response.data.managerdata.firstname,
                 lastname: response.data.managerdata.lastname,

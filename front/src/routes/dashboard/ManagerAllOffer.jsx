@@ -1,9 +1,10 @@
 import { Footer } from "@/layouts/footer";
 import { PencilLine, Trash } from "lucide-react";
+import { Link } from "react-router-dom";
 import { useAuth } from "../../contexts/auth";
 import { toast } from "react-toastify";
+import axios from "axios";
 import { useState } from "react";
-import API from "../../API/Api";
 
 const ManagerAllOffers = () => {
     const { offerdata, fetchalloffer, employeeofferdata, fetchallemployeeoffer } = useAuth()
@@ -11,8 +12,8 @@ const ManagerAllOffers = () => {
     // approve offer
     const approveoffer = async (id) => {
         try {
-            const response = await API.put(
-                `/approve-offer/${id}`
+            const response = await axios.put(
+                `http://localhost:4000/api/approve-offer/${id}`
             );
             await fetchalloffer();
             toast.success(response.data.message); // use backend message directly
@@ -25,8 +26,8 @@ const ManagerAllOffers = () => {
     // decline offer
     const declineoffer = async (id) => {
         try {
-            const response = await API.put(
-                `/reject-offer/${id}`
+            const response = await axios.put(
+                `http://localhost:4000/api/reject-offer/${id}`
             );
             await fetchalloffer();
             toast.success(response.data.message); // use backend message directly
@@ -38,13 +39,13 @@ const ManagerAllOffers = () => {
     };
     const softdeleteoffer = async (id) => {
         try {
-           await API.patch(
-                `/delete-offer/${id}`, null,  // no request body
+            const response = await axios.patch(
+                `http://localhost:4000/api/delete-offer/${id}`, null,  // no request body
             );
             toast.success('offer deleted Successfully!');
             await fetchalloffer();
         } catch (err) {
-            const message = err.response?.data?.message || "deletion failed";
+            const message = err.response?.data?.extradetails || err.response?.data?.message || "deletion failed";
             toast.error(message);
             console.error("delete error:", err);
         }
@@ -52,8 +53,8 @@ const ManagerAllOffers = () => {
     // soft delete employee offer
     const softdeleteemloyeeoffer = async (id) => {
         try {
-          await API.patch(
-                `/delete-employee-offer/${id}`, null,  // no request body
+            const response = await axios.patch(
+                `http://localhost:4000/api/delete-employee-offer/${id}`, null,  // no request body
             );
             toast.success('employee offer deleted Successfully!');
             await fetchallemployeeoffer();
@@ -66,8 +67,8 @@ const ManagerAllOffers = () => {
     // approve employee offer
     const approveemployeeoffer = async (id) => {
         try {
-            const response = await API.put(
-                `/approve-employee-offer/${id}`
+            const response = await axios.put(
+                `http://localhost:4000/api/approve-employee-offer/${id}`
             );
             await fetchallemployeeoffer();
             toast.success(response.data.message); // use backend message directly
@@ -80,8 +81,8 @@ const ManagerAllOffers = () => {
     // decline offer
     const declineemployeeoffer = async (id) => {
         try {
-            const response = await API.put(
-                `/reject-employee-offer/${id}`
+            const response = await axios.put(
+                `http://localhost:4000/api/reject-employee-offer/${id}`
             );
             await fetchallemployeeoffer();
             toast.success(response.data.message); // use backend message directly
@@ -154,6 +155,11 @@ const ManagerAllOffers = () => {
                                             className="flex items-center gap-1 px-3 py-1 bg-green-500 text-white rounded my-2"><PencilLine size={16} /> Approve </button>
                                         <button onClick={() => declineoffer(customer._id)}
                                             className="flex items-center gap-1 px-4 py-1 bg-orange-500 text-white rounded my-2"><Trash size={16} /> Decline</button>
+                                        {/* <Link to={"/Managerlayout/update-employee"}
+                                                >
+                                                <button className="flex items-center gap-1 px-3 py-1 bg-blue-500 text-white rounded my-2">
+                                                        <PencilLine size={16} /> Manage
+                                                    </button></Link> */}
                                         <button onClick={() => softdeleteoffer(customer._id)}
                                             className="flex items-center gap-1 px-4 py-1 bg-red-500 text-white rounded my-2"><Trash size={16} /> Delete</button>
                                     </td>
@@ -213,6 +219,14 @@ const ManagerAllOffers = () => {
                                     <td className="font-medium text-slate-900 dark:text-slate-50 px-4 py-3">{customer.manager}</td>
                                     <td className="px-4 py-3 flex gap-2">
                                         <button onClick={() => approveemployeeoffer(customer._id)} className="flex items-center gap-1 px-3 py-1 bg-green-500 text-white rounded my-2"><PencilLine size={16} /> Approve</button>
+                                        {/* <Link
+                                                    to={"/Managerlayout/update-employee"}
+                                                    state={{ transport: customer.transportSales }}
+                                                >
+                                                    <button className="flex items-center gap-1 px-3 py-1 bg-blue-500 text-white rounded my-2">
+                                                        <PencilLine size={16} /> Manage
+                                                    </button>
+                                                </Link> */}
                                         <button onClick={() => declineemployeeoffer(customer._id)} className="flex items-center gap-1 px-4 py-1 bg-orange-500 text-white rounded my-2"><Trash size={16} /> Decline</button>
                                         <button onClick={() => softdeleteemloyeeoffer(customer._id)} className="flex items-center gap-1 px-4 py-1 bg-red-500 text-white rounded my-2"><Trash size={16} /> Delete</button>
                                     </td>

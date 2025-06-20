@@ -1,8 +1,8 @@
 
 import React, { useState } from "react";
 import { Footer } from "@/layouts/footer";
+import axios from "axios";
 import { toast } from "react-toastify";
-import API from "../../API/Api";
 const Monthlysaleform = () => {
   const [usersession,setadminsession]=useState(sessionStorage.getItem("employeeid"));
   const [form, setForm] = useState({
@@ -44,7 +44,7 @@ const Monthlysaleform = () => {
             marketingMaterials: form.marketingMaterials,
         };
         try {
-             await API.put(`/monthlysaleform/${usersession}`, updatedData, {
+            const response = await axios.put(`http://localhost:4000/api/monthlysaleform/${usersession}`, updatedData, {
                 headers: {
                     "Content-Type": "application/json",
                 },
@@ -65,8 +65,9 @@ const Monthlysaleform = () => {
                 marketingMaterials: '',
             })
             toast.success('Successfully updated!')
+            console.log( response.data);
         } catch (err) {
-            const message = err.response?.data?.message || "updation failed";
+            const message = err.response?.data?.extradetails || err.response?.data?.message || "updation failed";
             toast.error(message);
             console.error("update error:", err);
         }

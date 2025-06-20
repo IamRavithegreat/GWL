@@ -86,6 +86,7 @@ import ManagerProtectedRoute from "./routes/ManagerProtectedRoute";
 import ManagerRoute from "./routes/ManagerRoute";
 import LManagerProtectedRoute from "./routes/LManagerProtectedRoute";
 import LManagerRoute from "./routes/LManagerRoute";
+import Updateadmin from "./routes/dashboard/Updateadmin";
 
 function App() {
     const router = createBrowserRouter([
@@ -460,7 +461,7 @@ function App() {
                 // employee routes
                 { path: "/layout/edit-employee", element: (
                 <AdminRoute>
-                    <EditemployeePage />
+                    <Allemployee/>
                 </AdminRoute>) },
                 { path: "/layout/update-employee", element: (
                 <AdminRoute>
@@ -554,7 +555,7 @@ function App() {
                 </AdminRoute>) },
                 { path: "/layout/manage-admin", element: (
                 <AdminRoute>
-                    <ManageManager />
+                    <Updateadmin/>
                 </AdminRoute>) },
             ],
         },

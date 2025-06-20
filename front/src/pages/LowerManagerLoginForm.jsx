@@ -4,9 +4,9 @@ import { useState } from "react";
 import { useAuth } from "../contexts/auth";
 import { useNavigate } from "react-router-dom";
 import { toast } from 'react-toastify';
+import axios from 'axios';
 import Swal from 'sweetalert2'
 import withReactContent from 'sweetalert2-react-content'
-import API from "../API/Api";
 const MySwal = withReactContent(Swal)
 
 function LowerManagerLoginForm() {
@@ -53,7 +53,7 @@ function LowerManagerLoginForm() {
     const handlesubmit = async (e) => {
         e.preventDefault();
         try {
-            const response = await API.post("/login-lowermanager", data);
+            const response = await axios.post("http://localhost:4000/api/login-lowermanager", data);
             storelowermanagertoken(response.data.token);
             setData({
                 email: "",
@@ -62,7 +62,7 @@ function LowerManagerLoginForm() {
             sessionStorage.setItem("lowermanagerid",response.data.payload.lowermanagerId);
             navigate("/LowerManagerlayout");
         } catch (err) {
-            const message = err.response?.data?.message || "Login failed";
+            const message = err.response?.data?.extradetails || err.response?.data?.message || "Login failed";
             toast.error(message);
             console.log("login error:", err);
         }

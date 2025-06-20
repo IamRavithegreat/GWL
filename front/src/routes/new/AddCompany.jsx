@@ -1,8 +1,8 @@
 import React, { useRef, useState } from "react";
 import { Footer } from "@/layouts/footer";
 import { toast } from "react-toastify";
+import axios from "axios";
 import { useAuth } from "../../contexts/auth";
-import API from "../../API/Api";
 
 const AddCompany = () => {
     const { fetchallcompany, lowermanager } = useAuth();
@@ -29,8 +29,8 @@ const AddCompany = () => {
     const handlesubmit = async (e) => {
         e.preventDefault();
         try {
-            const response = await API.post(
-                "/create-company",
+            const response = await axios.post(
+                "http://localhost:4000/api/create-company",
                 {
                     ...data,
                     manager:

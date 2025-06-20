@@ -3,14 +3,14 @@ import { PencilLine, Trash } from "lucide-react";
 import { Link } from "react-router-dom";
 import { useAuth } from "../../contexts/auth";
 import { toast } from "react-toastify";
-import API from "../../API/Api";
+import axios from "axios";
 
 const AllManager = () => {
     const {lowermanagerdata,fetchlowermanagerData}=useAuth()
     const softdeleteCustomer = async (id) => {  
     try {
-        await API.patch(
-            `/deletelowermanager/${id}`,
+        const response = await axios.patch(
+            `http://localhost:4000/api/deletelowermanager/${id}`,
             null,  // no request body
         );
         await fetchlowermanagerData();

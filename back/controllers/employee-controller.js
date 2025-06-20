@@ -4,19 +4,18 @@ const Employee = require("../models/employee-model");
 const bcrypt = require("bcrypt");
 const jwt = require("jsonwebtoken");
 require("dotenv").config();
-const EmployeeNotification = require("../models/EmployeeNotification-model");
-const PointRequest =require("../models/Employeepoints-model");
+//const EmployeeNotification = require("../models/EmployeeNotification-model");
+const PointRequest = require("../models/Employeepoints-model");
 
- 
 // Manager requests to add/deduct points
 exports.requestpoints = async (req, res) => {
-  try{
-    const { employeeid, type, value ,manager } = req.body;
-    if(!type || !value || !manager ){
+  try {
+    const { employeeid, type, value, manager,notification } = req.body;
+    if (!type || !value || !manager || !notification) {
       return res.status(400).json({
-         success: false,
+        success: false,
         message: "Please provide details",
-      })
+      });
     }
 
     // Convert points to number
@@ -27,230 +26,124 @@ exports.requestpoints = async (req, res) => {
         message: "Points must be a valid non-negative number",
       });
     }
-      const employee = await Employee.findOne({ employeeid });
+    const employee = await Employee.findOne({ employeeid });
     if (!employee) {
       return res.status(404).json({
         success: false,
         message: "employee not found",
       });
     }
-    const request = new PointRequest({
-    employee:employee._id,
-    employeeid,
-    type,
-    manager,
-    value:points
-  });
-  
-  await request.save();
 
-  res.status(200).json({ 
-    success: true,
-    message: 'Request submitted for admin approval.',
-    request
-  });
-  }
-  catch(err){
+    const request = new PointRequest({
+      employee: employee._id,
+      employeeid,
+      type,
+      manager,
+      value: points,
+      notification
+    });
+
+    await request.save();
+
+    res.status(200).json({
+      success: true,
+      message: "Request submitted for admin approval.",
+      request,
+    });
+  } catch (err) {
     return res.status(500).json({
       success: false,
       message: err.message,
     });
   }
 };
- 
+
 // Admin approves or disapproves request
-exports.pointsreview = async(req,res)=>{
-  try{
+exports.pointsreview = async (req, res) => {
+  try {
     const { approved } = req.body;
     const request = await PointRequest.findById(req.params.id);
- 
-  if (!request || request.status !== 'pending') {
-    return res.status(400).json({ success: false, message: 'Invalid or already processed request.' });
-  }
- 
-  if (approved) {
-    const employee = await Employee.findById(request.employee);
-    if (!employee) return res.status(404).json({ message: 'employee not found' });
- 
-    if (request.type === 'add') {
-      employee.TotalPoints += request.value;
+
+    if (!request || request.status !== "pending") {
+      return res
+        .status(400)
+        .json({
+          success: false,
+          message: "Invalid or already processed request.",
+        });
+    }
+
+    if (approved) {
+      const employee = await Employee.findById(request.employee);
+      if (!employee)
+        return res.status(404).json({ message: "employee not found" });
+
+      if (request.type === "add") {
+        employee.TotalPoints += request.value;
+      } else {
+        employee.TotalPoints = Math.max(
+          0,
+          employee.TotalPoints - request.value
+        );
+      }
+
+      await employee.save();
+      request.status = "approved";
+      request.message = "Request approved and points updated.";
     } else {
-      employee.TotalPoints = Math.max(0, employee.TotalPoints - request.value);
-    }
- 
-    await employee.save();
-    request.status = 'approved';
-    request.message = 'Request approved and points updated.';
-  } else {
-    request.status = 'disapproved';
-    request.message = 'Request disapproved. No changes made.';
-  }
- 
-  await request.save();
-  res.status(200).json({
-    success: true,
-    message: request.message,
-    request
-  });
-  }
-  catch(err){
-    res.status(400).json({
-      success:false,
-      message:err.message
-    })
-  }
- 
-};
- 
-// Get employee points
-exports.getemployeepoints =async(req,res)=>{
-  try{
-    const employee = await Employee.findById(req.params.id);
-    if (!employee) return res.status(404).json({
-       message: 'Customer not found'
-    });
-    res.status(200).json({
-      success:true,
-      message:"employee data receive",
-      employee 
-      });
-  }
-  catch(err){
-    res.status(400).json({
-      success:false,
-      message:err.message
-    })
-  }
-};
- 
-// Get all requests (for admin dashboard)
-exports.allrequest=async(req,res)=>{
-  try{
-    const requests = await PointRequest.find().populate('employee');
-    res.status(200).json({
-      success:true,
-      message:"get all request",
-      requests
-    });
-}
-catch(err){
-  res.status(400).json({
-      success:false,
-      message:err.message
-    })
-}
-}
-
-exports.employeeaddpoints = async (req, res) => {
-  try {
-    const { employeeid } = req.params;
-    let { points, notification } = req.body;
-    if (points === undefined || !employeeid || !notification) {
-      return res.status(400).json({
-        success: false,
-        message: "Please provide details",
-      });
+      request.status = "disapproved";
+      request.message = "Request disapproved. No changes made.";
     }
 
-    // Convert points to number
-    points = Number(points);
-    if (isNaN(points) || points < 0) {
-      return res.status(400).json({
-        success: false,
-        message: "Points must be a valid non-negative number",
-      });
-    }
-
-    const employee = await Employee.findOne({ employeeid });
-    if (!employee) {
-      return res.status(404).json({
-        success: false,
-        message: "employee not found",
-      });
-    }
-
-    // Add points to TotalPoints
-    employee.TotalPoints += points;
-
-    // Create and save notification
-    const newNotification = new EmployeeNotification({
-      notificationDescription: notification,
-      employee: employee._id,
-    });
-    await newNotification.save();
-
-    // Attach notification to employee
-    employee.notification.push(newNotification._id);
-
-    // Save employee document
-    await employee.save();
-
+    await request.save();
     res.status(200).json({
       success: true,
-      message: "Points added successfully",
-      employee,
+      message: request.message,
+      request,
     });
   } catch (err) {
-    return res.status(500).json({
+    res.status(400).json({
       success: false,
       message: err.message,
     });
   }
 };
 
+// Get employee points
+// exports.getemployeepoints =async(req,res)=>{
+//   try{
+//     const employee = await Employee.findById(req.params.id);
+//     if (!employee) return res.status(404).json({
+//        message: 'Customer not found'
+//     });
+//     res.status(200).json({
+//       success:true,
+//       message:"employee data receive",
+//       employee
+//       });
+//   }
+//   catch(err){
+//     res.status(400).json({
+//       success:false,
+//       message:err.message
+//     })
+//   }
+// };
 
-// delete points
- exports.employeedeletepoints = async (req, res) => {
+// Get all requests
+exports.allrequest = async (req, res) => {
   try {
-    const { employeeid } = req.params;
-    let { points, notification } = req.body;
-    if (points === undefined || !employeeid || !notification) {
-      return res.status(400).json({
-        success: false,
-        message: "Please provide details",
-      });
-    }
-
-    // Convert points to number
-    points = Number(points);
-    if (isNaN(points) || points < 0) {
-      return res.status(400).json({
-        success: false,
-        message: "Points must be a valid non-negative number",
-      });
-    }
-
-    const employee = await Employee.findOne({ employeeid });
-    if (!employee) {
-      return res.status(404).json({
-        success: false,
-        message: "employee not found",
-      });
-    }
-
-    // Add points to TotalPoints
-    employee.TotalPoints -= points;
-
-    // Create and save notification
-    const newNotification = new EmployeeNotification({
-      notificationDescription: notification,
-      employee: employee._id,
+    const requests = await PointRequest.find().populate({
+      path: "employee",
+      match: { status: "Approved" },
     });
-    await newNotification.save();
-
-    // Attach notification to employee
-    employee.notification.push(newNotification._id);
-
-    // Save employee document
-    await employee.save();
-
     res.status(200).json({
       success: true,
-      message: "Points added successfully",
-      employee,
+      message: "get all request",
+      requests,
     });
   } catch (err) {
-    return res.status(500).json({
+    res.status(400).json({
       success: false,
       message: err.message,
     });
@@ -262,21 +155,21 @@ exports.monthlysaleform = async (req, res) => {
   try {
     const data = req.body;
     const employeeId = req.params.id;
-    
+
     // Calculate points
     let points = 0;
-      if (data.serviceSales >= 1000) points += 2;
-      if (data.monthlySales >= 10000) points += 10;
-      if (data.docSales >= 100) points += 10;
-      if (data.transportSales >= 100) points += 10;
-      if (data.handlingSales >= 100) points += 10;
-      if (data.freightSales >= 60) points += 10;
-      if (data.newCustomerSales >= 10000) points += 50;
-      if (data.employeeQuarter === 'yes') points += 10;
-      if (data.digitalTraining === 'yes') points += 20;
-      if (data.bookRead === 'yes') points += 20;
-      if (data.marketingMaterial > 0) points += data.marketingMaterial * 6;
-      if (data.csrCompleted === 'yes') points += 20;
+    if (data.serviceSales >= 1000) points += 2;
+    if (data.monthlySales >= 10000) points += 10;
+    if (data.docSales >= 100) points += 10;
+    if (data.transportSales >= 100) points += 10;
+    if (data.handlingSales >= 100) points += 10;
+    if (data.freightSales >= 60) points += 10;
+    if (data.newCustomerSales >= 10000) points += 50;
+    if (data.employeeQuarter === "yes") points += 10;
+    if (data.digitalTraining === "yes") points += 20;
+    if (data.bookRead === "yes") points += 20;
+    if (data.marketingMaterial > 0) points += data.marketingMaterial * 6;
+    if (data.csrCompleted === "yes") points += 20;
 
     // Prepare update object
     const updateData = {
@@ -353,14 +246,14 @@ exports.softdeleteemployee = async (req, res) => {
 // get single employee
 exports.employee = async (req, res) => {
   try {
-    const employeedata = await Employee.findById(req.params.id).populate("notification");
+    const employeedata = await Employee.findById(req.params.id);
     if (!employeedata) {
       return res.status(404).json({
         success: false,
         message: "employee not found",
       });
     }
-    //employeedata.populate("notification"); 
+
     res.status(200).json({
       success: true,
       message: "employee data",
@@ -464,8 +357,6 @@ exports.updateEmployee = async (req, res) => {
   }
 };
 
-
-
 // reject employee
 exports.rejectEmp = async (req, res) => {
   try {
@@ -482,7 +373,7 @@ exports.rejectEmp = async (req, res) => {
     }
 
     // Update status to rejected
-    emp.status = 'Rejected';
+    emp.status = "Rejected";
     await emp.save();
 
     res.status(200).json({
@@ -490,7 +381,6 @@ exports.rejectEmp = async (req, res) => {
       message: "Employee rejected successfully.",
       emp,
     });
-
   } catch (err) {
     return res.status(500).json({
       success: false,
@@ -515,7 +405,7 @@ exports.approveEmp = async (req, res) => {
     }
 
     // Check if already approved
-    if (emp.status === 'Approved') {
+    if (emp.status === "Approved") {
       return res.status(400).json({
         success: false,
         message: "Employee is already approved.",
@@ -523,7 +413,7 @@ exports.approveEmp = async (req, res) => {
     }
 
     // Update status to Approved
-    emp.status = 'Approved';
+    emp.status = "Approved";
     await emp.save();
 
     res.status(200).json({
@@ -531,7 +421,6 @@ exports.approveEmp = async (req, res) => {
       message: "Employee approved successfully.",
       emp,
     });
-
   } catch (err) {
     return res.status(500).json({
       success: false,
@@ -569,7 +458,7 @@ exports.deleteEmp = async (req, res) => {
     }
 
     // Update status to deleted
-    emp.status = 'Delete';
+    emp.status = "Delete";
     await emp.save();
 
     res.status(200).json({
@@ -577,7 +466,6 @@ exports.deleteEmp = async (req, res) => {
       message: "Employee delete successfully.",
       emp,
     });
-
   } catch (err) {
     return res.status(500).json({
       success: false,
@@ -586,11 +474,10 @@ exports.deleteEmp = async (req, res) => {
   }
 };
 
-
 // create new employee
 exports.signupEmployee = async (req, res) => {
   try {
-    const { email, password, firstname, lastname, employeeid, phone,manager } =
+    const { email, password, firstname, lastname, employeeid, phone, manager } =
       req.body;
     if (
       !email ||
@@ -670,7 +557,6 @@ exports.signupEmployee = async (req, res) => {
   }
 };
 
-
 // login employee
 exports.loginEmployee = async (req, res) => {
   try {
@@ -698,7 +584,7 @@ exports.loginEmployee = async (req, res) => {
           "Password must be at least 8 characters long and contain at least one letter and one number",
       });
     }
-    const user = await Employee.findOne({ email,status:"Approved" });
+    const user = await Employee.findOne({ email, status: "Approved" });
     if (!user) {
       return res.status(400).json({
         success: false,
@@ -766,7 +652,7 @@ exports.updatesingleemployee = async (req, res) => {
     userdata.firstname = firstname.charAt(0).toUpperCase() + firstname.slice(1);
     userdata.lastname = lastname;
     userdata.email = email;
-    userdata.phone=phone;
+    userdata.phone = phone;
 
     await userdata.save();
 

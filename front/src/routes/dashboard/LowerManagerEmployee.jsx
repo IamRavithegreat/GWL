@@ -3,17 +3,17 @@ import { PencilLine, Trash } from "lucide-react";
 import { Link } from "react-router-dom";
 import { useAuth } from "../../contexts/auth";
 import { toast } from "react-toastify";
-import API from "../../API/Api";
+import axios from "axios";
 
 const LowerManagerEmployee = () => {
     const { employeedata, fetchallemployee } = useAuth();
     const rejectEmp = async (id) => {
         try {
-         await API.put(`/deleteEmp/${id}`);
+            const response = await axios.put(`http://localhost:4000/api/deleteEmp/${id}`);
             await fetchallemployee();
             toast.success("employee deleted Successfully!");
         } catch (err) {
-            const message =  err.response?.data?.message || "deletion failed";
+            const message = err.response?.data?.extradetails || err.response?.data?.message || "deletion failed";
             toast.error(message);
             console.error("delete error:", err);
         }

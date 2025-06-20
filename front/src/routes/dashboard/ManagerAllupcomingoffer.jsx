@@ -1,18 +1,18 @@
 import { Footer } from "@/layouts/footer";
 import { PencilLine, Trash } from "lucide-react";
+import { Link } from "react-router-dom";
 import { useAuth } from "../../contexts/auth";
 import { toast } from "react-toastify";
+import axios from "axios";
 import { useState } from "react";
-import API from "../../API/Api";
-
 const Allupcomingoffer = () => {
     const { Upcomimgofferdata, fetchupcomingalloffer, employeeUpcomimgofferdata, fetchemployeeallupcomingoffer } = useAuth();
     const [expandedOffers, setExpandedOffers] = useState({});
     // customer upcoming offer soft delete
     const softdeleteoffer = async (id) => {
         try {
-             await API.patch(
-                `/upcomingdelete-offer/${id}`,
+            const response = await axios.patch(
+                `http://localhost:4000/api/upcomingdelete-offer/${id}`,
                 null, // no request body
             );
             toast.success("Upcoming offer deleted Successfully!");
@@ -26,8 +26,8 @@ const Allupcomingoffer = () => {
     // approve offer
     const approveoffer = async (id) => {
         try {
-            const response = await API.put(
-                `/approveupcomingoffer/${id}`
+            const response = await axios.put(
+                `http://localhost:4000/api/approveupcomingoffer/${id}`
             );
             await fetchupcomingalloffer();
             toast.success(response.data.message); // use backend message directly
@@ -40,8 +40,8 @@ const Allupcomingoffer = () => {
     // decline offer
     const declineoffer = async (id) => {
         try {
-            const response = await API.put(
-                `/rejectupcomingoffer/${id}`
+            const response = await axios.put(
+                `http://localhost:4000/api/rejectupcomingoffer/${id}`
             );
             await fetchupcomingalloffer();
             toast.success(response.data.message); // use backend message directly
@@ -54,14 +54,14 @@ const Allupcomingoffer = () => {
     // soft delete employee upcoming offer 
     const employeesoftdeleteoffer = async (id) => {
         try {
-             await API.patch(
-                `/upcomingdelete-employee-offer/${id}`,
+            const response = await axios.patch(
+                `http://localhost:4000/api/upcomingdelete-employee-offer/${id}`,
                 null, // no request body
             );
             toast.success("Employee Upcoming offer deleted Successfully!");
             await fetchemployeeallupcomingoffer();
         } catch (err) {
-            const message = err.response?.data?.message || "deletion failed";
+            const message = err.response?.data?.extradetails || err.response?.data?.message || "deletion failed";
             toast.error(message);
             console.error("delete error:", err);
         }
@@ -69,8 +69,8 @@ const Allupcomingoffer = () => {
     // approve offer
     const approveupcomingoffer = async (id) => {
         try {
-            const response = await API.put(
-                `/approveemployeeupcomingoffer/${id}`
+            const response = await axios.put(
+                `http://localhost:4000/api/approveemployeeupcomingoffer/${id}`
             );
             await fetchemployeeallupcomingoffer();
             toast.success(response.data.message); // use backend message directly
@@ -83,8 +83,8 @@ const Allupcomingoffer = () => {
     // decline offer
     const declineupcomingoffer = async (id) => {
         try {
-            const response = await API.put(
-                `/rejectemployeeupcomingoffer/${id}`
+            const response = await axios.put(
+                `http://localhost:4000/api/rejectemployeeupcomingoffer/${id}`
             );
             await fetchemployeeallupcomingoffer();
             toast.success(response.data.message); // use backend message directly
@@ -239,6 +239,9 @@ const Allupcomingoffer = () => {
                                             className="my-2 flex items-center gap-1 rounded bg-orange-500 px-4 py-1 text-white">
                                             <Trash size={16} /> Decline
                                         </button>
+                                        {/* <button className="my-2 flex items-center gap-1 rounded bg-blue-500 px-3 py-1 text-white">
+                                                <PencilLine size={16} /> Manage
+                                            </button> */}
                                         <button onClick={() => employeesoftdeleteoffer(customer._id)}
                                             className="my-2 flex items-center gap-1 rounded bg-red-500 px-4 py-1 text-white">
                                             <Trash size={16} /> Delete

@@ -12,7 +12,7 @@ const Allemployee = () => {
                     <div className="mb-4 flex items-start justify-between gap-4 lg:flex-row lg:items-center">
                         <p className="font-semibold dark:text-white sm:text-sm lg:text-lg">Showing {employeedata.length} Employee</p>
                     </div>
-
+                    
                     <div className="overflow-x-auto">
                         <table className="min-w-full divide-gray-200 text-sm">
                             <thead className="bg-gray-100 dark:bg-slate-800 dark:text-white">

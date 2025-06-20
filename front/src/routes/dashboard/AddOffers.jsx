@@ -1,8 +1,8 @@
 import { Footer } from "@/layouts/footer";
 import { useState } from "react";
 import { toast } from "react-toastify";
+import axios from "axios";
 import { useAuth } from "../../contexts/auth";
-import API from "../../API/Api";
 const AddOffers = () => {
     const { fetchalloffer, lowermanager } = useAuth();
     const [data, setdata] = useState({
@@ -22,8 +22,8 @@ const AddOffers = () => {
     const handlesubmit = async (e) => {
         e.preventDefault();
         try {
-           await API.post(
-                "/create-offer",
+            const response = await axios.post(
+                "http://localhost:4000/api/create-offer",
                 {
                     ...data,
                     manager:
@@ -38,6 +38,7 @@ const AddOffers = () => {
                     withCredentials: true,
                 },
             );
+            //console.log(response);
             setdata({
                 offerTitle: "",
                 offerDescription: "",

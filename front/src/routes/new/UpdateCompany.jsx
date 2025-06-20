@@ -1,10 +1,11 @@
 import React, { useEffect, useState } from "react";
 import { Footer } from "@/layouts/footer";
+import axios from "axios";
 import { toast } from "react-toastify";
 import { useLocation } from "react-router-dom";
 import { useAuth } from "../../contexts/auth";
-import API from "../../API/Api";
 const UpdateCompany = () => {
+    //const [usersession, setsession] = useState(sessionStorage.getItem("id"));
     const { fetchallcompany, lowermanager } = useAuth();
     const [data, setData] = useState({
         name: "",
@@ -29,7 +30,7 @@ const UpdateCompany = () => {
         };
 
         try {
-         await API.put(`/updatecompany/${data.companyId}`, updatedData, {
+            const response = await axios.put(`http://localhost:4000/api/updatecompany/${data.companyId}`, updatedData, {
                 headers: {
                     "Content-Type": "application/json",
                 },
@@ -50,7 +51,7 @@ const UpdateCompany = () => {
     };
 
     useEffect(() => {
-        API.get(`/getCompany/${LManagerCompId}`)
+        axios.get(`http://localhost:4000/api/getCompany/${LManagerCompId}`)
             .then(res => {
                 setData({
                     name: res.data.compData.name,
@@ -68,7 +69,7 @@ const UpdateCompany = () => {
     const handleSubmit = async (e) => {
         e.preventDefault();
         try {
-            await API.post('/companypoints',
+            await axios.post('http://localhost:4000/api/companypoints',
                 {
                     companyId,
                     type,

@@ -4,7 +4,7 @@ import { useState } from "react";
 import { useAuth } from "../contexts/auth";
 import { useNavigate } from "react-router-dom";
 import { toast } from 'react-toastify';
-import API from "../API/Api";
+import axios from 'axios';
 
 function AdminLoginForm() {
     const navigate = useNavigate();
@@ -31,7 +31,7 @@ function AdminLoginForm() {
     const handlesubmit = async (e) => {
         e.preventDefault();
         try {
-            const response = await API.post("/loginAdmin", data);
+            const response = await axios.post("http://localhost:4000/api/loginAdmin", data);
             console.log(response);
             console.log("res from server:", response.data.extradetails);
             storeadmintoken(response.data.admintoken);

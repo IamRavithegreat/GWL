@@ -1,15 +1,16 @@
 import { Footer } from "@/layouts/footer";
-import { Trash } from "lucide-react";
+import { PencilLine, Trash } from "lucide-react";
+import { Link } from "react-router-dom";
 import { useAuth } from "../../contexts/auth";
 import { toast } from "react-toastify";
-import API from "../../API/Api";
+import axios from "axios";
 
 const ManagerCustomer = () => {
     const {customersdata,fetchalluser}=useAuth()
     const softdeleteCustomer = async (id) => {  
     try {
-         await API.patch(
-            `/deleteuser/${id}`,
+        const response = await axios.patch(
+            `http://localhost:4000/api/deleteuser/${id}`,
             null,  
         );
         await fetchalluser(); 
@@ -24,8 +25,8 @@ const ManagerCustomer = () => {
     // approve customer
  const approveCustomer = async (id) => {  
   try {
-    const response = await API.put(
-      `/approvecustomer/${id}`
+    const response = await axios.put(
+      `http://localhost:4000/api/approvecustomer/${id}`
     );
     await fetchalluser(); 
     toast.success(response.data.message); // use backend message directly
@@ -37,8 +38,8 @@ const ManagerCustomer = () => {
 };
 const declineCustomer = async (id) => {
   try {
-    const response = await API.put(
-      `/rejectcustomer/${id}`
+    const response = await axios.put(
+      `http://localhost:4000/api/rejectcustomer/${id}`
     );
     await fetchalluser(); // or your function to refresh customer list
     toast.success(response.data.message); // Show success message from backend
@@ -91,6 +92,11 @@ const declineCustomer = async (id) => {
                                             <button onClick={()=>declineCustomer(customer._id)} className="flex items-center gap-1 px-4 py-1 bg-orange-500 text-white rounded my-2">
                                                 <Trash size={16} /> Decline
                                             </button>
+                                            {/* <Link to={"/Managerlayout/manage-customer"}>
+                                                <button className="flex items-center gap-1 px-3 py-1 bg-blue-500 text-white rounded my-2">
+                                                    <PencilLine size={16} /> Manage
+                                                </button>
+                                            </Link> */}
                                             <button onClick={()=>softdeleteCustomer(customer._id)} className="flex items-center gap-1 px-4 py-1 bg-red-500 text-white rounded my-2">
                                                 <Trash size={16} /> Delete
                                             </button>

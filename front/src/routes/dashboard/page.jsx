@@ -1,9 +1,9 @@
 import { Area, AreaChart, ResponsiveContainer, Tooltip, XAxis, YAxis } from "recharts";
 import { useTheme } from "@/hooks/use-theme";
-import { overviewData} from "@/constants";
+import { overviewData, recentSalesData, topProducts } from "@/constants";
 import { Footer } from "@/layouts/footer";
 import { CreditCard, TrendingUp, Users } from "lucide-react";
-import { Line } from "react-chartjs-2";
+import { Bar, Line } from "react-chartjs-2";
 import {
     Chart as ChartJS,
     CategoryScale,
@@ -12,6 +12,7 @@ import {
     Title,
     PointElement,
     LineElement,
+    //Tooltip,
     Legend,
 } from "chart.js";
 import { useAuth } from "../../contexts/auth";
@@ -23,6 +24,7 @@ ChartJS.register(
     Title,
     PointElement,
     LineElement,
+    //Tooltip,
     Legend,
 );
 const DashboardPage = () => {

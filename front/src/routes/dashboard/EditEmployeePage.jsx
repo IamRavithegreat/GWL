@@ -3,14 +3,14 @@ import { PencilLine, Trash } from "lucide-react";
 import { Link } from "react-router-dom";
 import { useAuth } from "../../contexts/auth";
 import { toast } from "react-toastify";
-import API from "../../API/Api";
+import axios from "axios";
 
 const EditEmployeePage = () => {
     const {employeedata,fetchallemployee}=useAuth()
     const softdeleteemployee = async (id) => {
         try {
-             await API.patch(
-                `/deleteemployee/${id}`,
+            const response = await axios.patch(
+                `http://localhost:4000/api/deleteemployee/${id}`,
                 null, // no request body
             );
             await fetchallemployee();

@@ -1,8 +1,8 @@
 import React, { useEffect, useState } from "react";
 import { Footer } from "@/layouts/footer";
+import axios from "axios";
 import { toast } from "react-toastify";
 import { useLocation } from "react-router-dom";
-import API from "../../API/Api";
 const ManageProfile = () => {
     const [usersession, setadminsession] = useState(sessionStorage.getItem("id"));
 
@@ -32,7 +32,7 @@ const ManageProfile = () => {
         };
 
         try {
-             await API.put(`/update-singlecustomer/${usersession}`, updatedData, {
+            const response = await axios.put(`http://localhost:4000/api/update-singlecustomer/${usersession}`, updatedData, {
                 headers: {
                     "Content-Type": "application/json",
                 },
@@ -44,8 +44,9 @@ const ManageProfile = () => {
                 email: "",
             })
             toast.success('Successfully updated!')
+            console.log(response.data);
         } catch (err) {
-            const message = err.response?.data?.message || "updation failed";
+            const message = err.response?.data?.extradetails || err.response?.data?.message || "updation failed";
             toast.error(message);
             console.error("update error:", err);
         }
@@ -53,7 +54,7 @@ const ManageProfile = () => {
 
     const getCustomer = async () => {
         try {
-            const response = await API.get(`/user/${custId}`)
+            const response = await axios.get(`http://localhost:4000/api/user/${custId}`)
             setData({
                 firstname: response.data.userdata.firstname,
                 lastname: response.data.userdata.lastname,

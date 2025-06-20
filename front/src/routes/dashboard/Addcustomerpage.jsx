@@ -1,11 +1,16 @@
 import React, { useState } from "react";
 import { Footer } from "@/layouts/footer";
 import { toast } from "react-toastify";
+import axios from "axios";
+import { useNavigate } from "react-router-dom";
 import { useAuth } from "../../contexts/auth";
-import API from "../../API/Api";
 
 const AddcustomerPage = () => {
+    const navigate = useNavigate();
 
+    // const [img,setImg]=useState("")
+    // const formdata=new FormData()
+    // formdata.append("image",img)
     const { fetchalluser, lowermanager } = useAuth();
     const [data, setdata] = useState({
         firstname: "",
@@ -26,8 +31,8 @@ const AddcustomerPage = () => {
     const handlesubmit = async (e) => {
         e.preventDefault();
         try {
-          await API.post(
-                "/signup",
+            const response = await axios.post(
+                "http://localhost:4000/api/signup",
                 {
                     ...data,
                     manager:
@@ -42,6 +47,24 @@ const AddcustomerPage = () => {
                     withCredentials: true,
                 },
             );
+            // fetch("http://localhost:4000/single",{
+            //     method:"POST",
+            //     body:formdata,
+            // })
+            // .then((res)=>{
+            //     console.log(res.msg)
+            // })
+            // .catch((err)=>{
+            //     console.log(err)
+            // })
+            // axios.post("http://localhost:4000/single",formdata)
+            // .then(res=>console.log(res))
+            // .catch(err=>console.log(err))
+
+            console.log(response);
+            //console.log("res from server",response.data.extradetails);
+
+            //setImg("")
             setdata({
                 firstname: "",
                 lastname: "",
@@ -54,7 +77,7 @@ const AddcustomerPage = () => {
             await fetchalluser();
             toast.success("customer created successfully !");
         } catch (err) {
-            const message = err.response?.data?.message || "Signup failed";
+            const message = err.response?.data?.extradetails || err.response?.data?.message || "Signup failed";
             toast.error(message);
             console.error("Signup error:", err);
         }
@@ -159,6 +182,17 @@ const AddcustomerPage = () => {
                             />
                         </div>
                     </div>
+                    {/* <div className="flex flex-col">
+                        <label className="mb-1 mt-3 dark:text-white">Upload Image</label>
+                        <input
+                            type="file"
+                            onChange={(e)=>(setImg(e.target.files[0]))}
+                            //accept="image/*"
+                            placeholder="Upload Image"
+                            className="mt-1 w-full appearance-none rounded px-3 focus:bg-slate-50 focus:shadow focus:outline-none dark:text-white"
+                        />
+                    </div> */}
+
                     <div className="mt-6">
                         <button
                             onClick={handlesubmit}

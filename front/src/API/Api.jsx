@@ -1,8 +1,9 @@
 import axios from "axios";
 
 const API=axios.create({
-   baseURL: "https://gwl-backend-2.onrender.com/api"||"http://localhost:4000/api",
-  withCredentials: true,
+    baseURL:"http://localhost:4000/api"
 })
-export default API;
 
+export const getuserdata=()=>{
+    return API.get("/user")
+}

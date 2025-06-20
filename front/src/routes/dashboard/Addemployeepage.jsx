@@ -1,8 +1,8 @@
 import React, { useRef, useState } from "react";
 import { Footer } from "@/layouts/footer";
 import { toast } from "react-toastify";
+import axios from "axios";
 import { useAuth } from "../../contexts/auth";
-import API from "../../API/Api";
 
 const AddemployeePage = () => {
     const { lowermanager, fetchallemployee } = useAuth();
@@ -30,8 +30,8 @@ const AddemployeePage = () => {
     const handlesubmit = async (e) => {
         e.preventDefault();
         try {
-             await API.post(
-                "/signupEmployee",
+            const response = await axios.post(
+                "http://localhost:4000/api/signupEmployee",
                 {
                     ...data,
                     manager:
@@ -56,8 +56,9 @@ const AddemployeePage = () => {
             });
             await fetchallemployee();
             toast.success("employee added successfully !");
+            console.log(response);
         } catch (err) {
-            const message = err.response?.data?.message || "Login failed";
+            const message = err.response?.data?.extradetails || err.response?.data?.message || "Login failed";
             toast.error(message);
             console.log("login error:", err);
         }

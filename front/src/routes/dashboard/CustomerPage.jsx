@@ -6,7 +6,7 @@ import { useAuth } from "../../contexts/auth";
 import { useEffect, useState } from "react";
 import Swal from "sweetalert2";
 import withReactContent from "sweetalert2-react-content";
-import API from "../../API/Api";
+import axios from "axios";
 
 const MySwal = withReactContent(Swal);
 
@@ -17,7 +17,8 @@ const CustomerPage = () => {
         const [offerdata, setofferdata] = useState([]);
         const fetchalloffer = async () => {
             try {
-                const response = await API.get("/get-approveoffer");
+                const response = await axios.get("http://localhost:4000/api/get-approveoffer");
+                //console.log(response.data);
                 setofferdata(response.data.offer);
             } catch (err) {
                 console.error(err);
@@ -31,7 +32,8 @@ const CustomerPage = () => {
         const [upcomingofferdata, setupcomingofferdata] = useState([]);
         const fetchallupcomingoffer = async () => {
             try {
-                const response = await API.get("/get-approveupcomingoffer");
+                const response = await axios.get("http://localhost:4000/api/get-approveupcomingoffer");
+                //console.log(response.data);
                 setupcomingofferdata(response.data.offer);
             } catch (err) {
                 console.error(err);
@@ -59,6 +61,7 @@ const CustomerPage = () => {
     return (
         <div className="flex flex-col gap-y-4">
             <h1 className="title">{user.company?.[0].name}</h1>
+            {/* <h1 className="title">Company</h1> */}
             <div className="flex flex-col items-stretch gap-4 md:flex-row">
                 {/* 40% Width Box */}
                 <div className="w-full md:w-2/5">
@@ -99,6 +102,14 @@ const CustomerPage = () => {
                             <p>1. Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do elaborum.</p>
                                 <p>2. Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do elaborum.</p>
                                 <p>3. Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do elaborum.</p>
+                                {/* {user.notification?.map((notification, index) => (
+                                    <div key={index}>
+                                        <span>{index + 1}.</span>
+                                        <span className="mb-2 ml-2">
+                                            {notification.notificationDescription}
+                                        </span>
+                                    </div>
+                                ))} */}
                             </p>
                         </div>
                     </div>

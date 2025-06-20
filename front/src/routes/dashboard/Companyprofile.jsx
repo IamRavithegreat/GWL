@@ -1,5 +1,7 @@
 import { Footer } from "@/layouts/footer";
-import { useEffect } from "react";
+
+import { useEffect, useState } from "react";
+import axios from "axios";
 import { useAuth } from "../../contexts/auth";
 
 const Companyprofile = () => {

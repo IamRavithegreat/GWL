@@ -1,9 +1,9 @@
 import { useEffect, useRef, useState } from "react";
 import { Footer } from "@/layouts/footer";
 import { toast } from "react-toastify";
+import axios from "axios";
 import { useAuth } from "../../contexts/auth";
 import { useLocation } from "react-router-dom";
-import API from "../../API/Api";
 
 const UpdateEmployee = () => {
     const location = useLocation();
@@ -58,7 +58,7 @@ const UpdateEmployee = () => {
             phone: data.phone,
         };
         try {
-            const response = await API.put(`/update-employee/${data.employeeid}`, updateData, {
+            const response = await axios.put(`http://localhost:4000/api/update-employee/${data.employeeid}`, updateData, {
                 headers: {
                     "Content-Type": "application/json",
                 },
@@ -76,7 +76,7 @@ const UpdateEmployee = () => {
             toast.success("employee updated successfully !");
             console.log(response);
         } catch (err) {
-            const message =  err.response?.data?.message || "Login failed";
+            const message = err.response?.data?.extradetails || err.response?.data?.message || "Login failed";
             toast.error(message);
             console.log("login error:", err);
         }
@@ -90,7 +90,7 @@ const UpdateEmployee = () => {
     const handleSubmit = async (e) => {
         e.preventDefault();
         try {
-            await API.post('/request',
+            await axios.post('http://localhost:4000/api/request',
                 {
                     employeeid,
                     type,
@@ -105,6 +105,9 @@ const UpdateEmployee = () => {
                     withCredentials: true,
                 }
             );
+            setemployeeId("");
+            setValue("");
+            setnotification("");
             toast.success('Request sent for admin approval');
         }
         catch (err) {
@@ -114,7 +117,7 @@ const UpdateEmployee = () => {
     };
 
     useEffect(() => {
-        API.get(`/employee/${LManagerEmp.LManagerEmpId}`)
+        axios.get(`http://localhost:4000/api/employee/${LManagerEmp.LManagerEmpId}`)
             .then(res => {
                 console.log(res.data.employeedata);  
                 setdata({

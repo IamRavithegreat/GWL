@@ -22,12 +22,13 @@ const EditEmployeeProfilePage = () => {
                                 <th className="px-4 py-2 text-left font-semibold">Email</th>
                                 <th className="px-4 py-2 text-left font-semibold">Employee Id</th>
                                 <th className="px-4 py-2 text-left font-semibold">Phone_No</th>
+                                <th className="px-4 py-2 text-left font-semibold">Status</th>
                                 <th className="px-4 py-2 text-left font-semibold">Actions</th>
                             </tr>
                         </thead>
                         <tbody className="divide-y divide-gray-200">
-
-                            <tr>
+                        
+                               <tr>
                                 <td className="px-4 py-3 dark:text-white">1</td>
                                 <td className="px-4 py-3">
                                     <div className="flex items-center gap-3">
@@ -37,6 +38,7 @@ const EditEmployeeProfilePage = () => {
                                 <td className="px-4 py-3 dark:text-white">{singleemployee.email}</td>
                                 <td className="px-4 py-3 dark:text-white">{singleemployee.employeeid}</td>
                                 <td className="px-4 py-3 dark:text-white">{singleemployee.phone}</td>
+                                <td className="px-4 py-3 dark:text-white">{singleemployee.status}</td>
                                 <td className="px-4 py-3 flex gap-2">
                                     <Link to={"/Employeelayout/manage-profile"}
                                         state={{ employeeId: singleemployee._id }}
@@ -47,7 +49,7 @@ const EditEmployeeProfilePage = () => {
                                     </Link>
                                 </td>
                             </tr>
-
+                        
                         </tbody>
                     </table>
                 </div>
@@ -59,7 +61,6 @@ const EditEmployeeProfilePage = () => {
                 <div className="flex lg:flex-row justify-between items-start lg:items-center mb-4 gap-4">
                     <p className="lg:text-lg sm:text-sm font-semibold dark:text-white">Showing Employee</p>
                 </div>
-
                 <div className="overflow-x-auto">
                     <table className="min-w-full divide-gray-200 text-sm">
                         <thead className="bg-gray-100 dark:bg-slate-800 dark:text-white">
@@ -70,12 +71,10 @@ const EditEmployeeProfilePage = () => {
                                 <th className="px-4 py-2 text-left font-semibold">Employee Id</th>
                                 <th className="px-4 py-2 text-left font-semibold">Phone_No</th>
                                 <th className="px-4 py-2 text-left font-semibold">Points</th>
-                                <th className="px-4 py-2 text-left font-semibold">Points Alloted</th>
-                                <th className="px-4 py-2 text-left font-semibold">Points Validity</th>
                             </tr>
                         </thead>
                         <tbody className="divide-y divide-gray-200">
-
+                        
                             <tr>
                                 <td className="px-4 py-3 dark:text-white">1</td>
                                 <td className="px-4 py-3">
@@ -87,9 +86,8 @@ const EditEmployeeProfilePage = () => {
                                 <td className="px-4 py-3 dark:text-white">{singleemployee.employeeid}</td>
                                 <td className="px-4 py-3 dark:text-white">{singleemployee.phone}</td>
                                 <td className="px-4 py-3 dark:text-white">{singleemployee.TotalPoints}</td>
-                                <td className="px-4 py-3 dark:text-white">10-6-2025</td>
-                                <td className="px-4 py-3 dark:text-white">10-6-2026</td>
                             </tr>
+                        
                         </tbody>
                     </table>
                 </div>

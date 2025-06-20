@@ -3,9 +3,9 @@ import { useState } from "react";
 import { useAuth } from "../contexts/auth";
 import { useNavigate } from "react-router-dom";
 import { toast } from 'react-toastify';
+import axios from 'axios';
 import Swal from 'sweetalert2'
 import withReactContent from 'sweetalert2-react-content'
-import API from "../API/Api";
 const MySwal = withReactContent(Swal)
 
 function LoginForm() {
@@ -52,7 +52,9 @@ function LoginForm() {
     const handlesubmit = async (e) => {
         e.preventDefault();
         try {
-            const response = await API.post("/login", data);
+            const response = await axios.post("http://localhost:4000/api/login", data);
+            //console.log(response);
+            //console.log("res from server:", response.data.extradetails);
             storetoken(response.data.token);
             setData({
                 email: "",

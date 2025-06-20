@@ -1,8 +1,8 @@
 import { Footer } from "@/layouts/footer";
 import { useState } from "react";
 import { toast } from "react-toastify";
+import axios from "axios";
 import { useAuth } from "../../contexts/auth";
-import API from "../../API/Api";
 
 const Addupcomingoffer = () => {
     const { fetchupcomingalloffer, lowermanager } = useAuth();
@@ -23,8 +23,8 @@ const Addupcomingoffer = () => {
     const handlesubmit = async (e) => {
         e.preventDefault();
         try {
-            await API.post(
-                "/upcomingcreate-offer",
+            const response = await axios.post(
+                "http://localhost:4000/api/upcomingcreate-offer",
                 {
                     ...data,
                     manager:
@@ -49,7 +49,7 @@ const Addupcomingoffer = () => {
             await fetchupcomingalloffer();
             toast.success("Upcoming offer created successfully!");
         } catch (err) {
-            const message = err.response?.data?.message || "offer created failed";
+            const message = err.response?.data?.extradetails || err.response?.data?.message || "offer created failed";
             toast.error(message);
             console.log("login error:", err);
         }

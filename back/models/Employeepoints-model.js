@@ -16,8 +16,12 @@ const pointRequestSchema = new mongoose.Schema({
   manager:{
     type:String,
    },
+  notification:{
+    type:String,
+    required:true,
+  },
   message: String,
   createdAt: { type: Date, default: Date.now },
 });
 
-module.exports = mongoose.model("EmployeePoints", pointRequestSchema);
+module.exports = mongoose.model("EmployeePoints", pointRequestSchema)

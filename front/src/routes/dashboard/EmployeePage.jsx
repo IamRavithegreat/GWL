@@ -6,40 +6,59 @@ import Rewards from "./Reward";
 import Points from "./Points";
 import { useAuth } from "../../contexts/auth";
 import { useEffect, useState } from "react";
-import API from "../../API/Api";
+import axios from "axios";
 
 const EmployeePage = () => {
     const { theme } = useTheme();
     const { employeeofferdata, singleemployee, employeeUpcomimgofferdata, fetchuserData } = useAuth();
     const [expandedOffers, setExpandedOffers] = useState({});
-   // get all offer function
-        const [offerdata, setofferdata] = useState([]);
-        const fetchalloffer = async () => {
-            try {
-                const response = await API.get("/getallapprove-employee-offer");
-                setofferdata(response.data.offer);
-            } catch (err) {
-                console.error(err);
-            }
-        };
-        useEffect(() => {
-            fetchalloffer();
-        }, []);
-    
-    // get all upcoming offer function
-        const [upcomingofferdata, setupcomingofferdata] = useState([]);
-        const fetchallupcomingoffer = async () => {
-            try {
-                const response = await API.get("/getapproveupcoming-employee-offer");
-                setupcomingofferdata(response.data.offer);
-            } catch (err) {
-                console.error(err);
-            }
-        };
-        useEffect(() => {
-            fetchallupcomingoffer();
-        }, []);
+    // get all offer function
+    const [offerdata, setofferdata] = useState([]);
+    const fetchalloffer = async () => {
+        try {
+            const response = await axios.get("http://localhost:4000/api/getallapprove-employee-offer");
+            //console.log(response.data);
+            setofferdata(response.data.offer);
+        } catch (err) {
+            console.error(err);
+        }
+    };
+    useEffect(() => {
+        fetchalloffer();
+    }, []);
 
+    // get all upcoming offer function
+    const [upcomingofferdata, setupcomingofferdata] = useState([]);
+    const fetchallupcomingoffer = async () => {
+        try {
+            const response = await axios.get("http://localhost:4000/api/getapproveupcoming-employee-offer");
+            //console.log(response.data);
+            setupcomingofferdata(response.data.offer);
+        } catch (err) {
+            console.error(err);
+        }
+    };
+    useEffect(() => {
+        fetchallupcomingoffer();
+    }, []);
+
+    // get all request
+    const [request, setrequest] = useState([]);
+    const getallrequest = async () => {
+        try {
+            const response = await axios.get("http://localhost:4000/api/allrequest");
+            setrequest(response.data.requests);
+            console.log(response.data.requests);
+        } catch (err) {
+            const errorMessage = "get all request data failed";
+            toast.error(errorMessage);
+            console.error(err);
+        }
+    };
+    useEffect(() => {
+        getallrequest();
+    }, []);
+    
     const truncateText = (text, length = 20) => (text.length > length ? text.slice(0, length) + "..." : text);
     const toggleDescription = (key) => {
         setExpandedOffers((prev) => ({
@@ -87,9 +106,12 @@ const EmployeePage = () => {
                         </div>
                         <div className="card-body flex-1 overflow-auto rounded-lg bg-slate-100 p-0 pb-2 pt-2 dark:bg-slate-950">
                             <p className="p-4 text-slate-900 dark:text-slate-50">
-                                <p>1. Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do elaborum.</p>
-                                <p>2. Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do elaborum.</p>
-                                <p>3. Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do elaborum.</p>
+                                {request.slice().reverse().map((data, index) => (
+                                    <div key={index}>
+                                        <span>{index + 1}.</span>
+                                        <span className="mb-2 ml-2">{data.notification}</span>
+                                    </div>
+                                ))}
                             </p>
                         </div>
                     </div>
@@ -100,7 +122,12 @@ const EmployeePage = () => {
                 {/* Latest Offers */}
                 <div className="card">
                     <div className="card-header">
-                        <span><Package size={26} className="text-blue-500"/></span>
+                        <span>
+                            <Package
+                                size={26}
+                                className="text-blue-500"
+                            />
+                        </span>
                         <p className="card-title">Latest Offers</p>
                     </div>
                     <div className="card-body h-[300px] overflow-auto p-0">
@@ -113,12 +140,12 @@ const EmployeePage = () => {
                                 <p className="text-sm text-slate-600 dark:text-slate-400">
                                     {expandedOffers[`latest-${sale._id}`] ? sale.offerDescription : truncateText(sale.offerDescription, 50)}
                                     {sale.offerDescription.length > 50 && (
-                                        <button
+                                    <button
                                             onClick={() => toggleDescription(`latest-${sale._id}`)}
                                             className="ml-1 text-xs font-medium text-red-500 hover:underline"
                                         >
                                             {expandedOffers[`latest-${sale._id}`] ? " Show Less" : " Show More"}
-                                        </button>
+                                    </button>
                                     )}
                                 </p>
                             </div>
@@ -129,7 +156,12 @@ const EmployeePage = () => {
                 {/* Upcoming Offers */}
                 <div className="card">
                     <div className="card-header">
-                    <span><Package size={26} className="text-blue-500"/></span>
+                        <span>
+                            <Package
+                                size={26}
+                                className="text-blue-500"
+                            />
+                        </span>
                         <p className="card-title">Upcoming Offers</p>
                     </div>
                     <div className="card-body h-[300px] overflow-auto p-0">

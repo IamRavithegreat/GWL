@@ -3,8 +3,8 @@ import { PencilLine, Trash } from "lucide-react";
 import { Link } from "react-router-dom";
 import { useAuth } from "../../contexts/auth";
 import { toast } from "react-toastify";
+import axios from "axios";
 import { useState } from "react";
-import API from "../../API/Api";
 
 const AllOffers = () => {
     const { offerdata, fetchalloffer, employeeofferdata, fetchallemployeeoffer } = useAuth()
@@ -13,13 +13,13 @@ const AllOffers = () => {
 
     const softdeleteoffer = async (id) => {
         try {
-            await API.patch(
-                `/delete-offer/${id}`, null,  // no request body
+            const response = await axios.patch(
+                `http://localhost:4000/api/delete-offer/${id}`, null,  // no request body
             );
             toast.success('offer deleted Successfully!');
             await fetchalloffer();
         } catch (err) {
-            const message =err.response?.data?.message || "deletion failed";
+            const message = err.response?.data?.extradetails || err.response?.data?.message || "deletion failed";
             toast.error(message);
             console.error("delete error:", err);
         }
@@ -27,13 +27,13 @@ const AllOffers = () => {
 
     const softdeleteemloyeeoffer = async (id) => {
         try {
-         await API.patch(
-                `/delete-employee-offer/${id}`, null,  // no request body
+            const response = await axios.patch(
+                `http://localhost:4000/api/delete-employee-offer/${id}`, null,  // no request body
             );
             toast.success('employee offer deleted Successfully!');
             await fetchallemployeeoffer();
         } catch (err) {
-            const message = err.response?.data?.message || "deletion failed";
+            const message = err.response?.data?.extradetails || err.response?.data?.message || "deletion failed";
             toast.error(message);
             console.error("delete error:", err);
         }

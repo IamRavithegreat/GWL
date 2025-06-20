@@ -2,28 +2,31 @@ import { useState,useEffect } from "react";
 import { Footer } from "@/layouts/footer";
 import { PencilLine } from "lucide-react";
 import { Link } from "react-router-dom";
-import API from "../../API/Api";
+import axios from "axios";
 const EditAdminPage = () => {
     
     // function to fetch admion data from the server
     const [admin, setadmin] = useState({});
-    const [adminsession,setadminsession]=useState(sessionStorage.getItem("adminid"));
-    const fetchadminData = async () => {
+    const fetchadminData = async (adminid) => {
         try {
-          const response = await API.get(`/admin/${adminsession}`,
+          const response = await axios.get(`http://localhost:4000/api/admin/${adminid}`,
            {
             headers: {
               "Content-Type": "application/json",
             },
           }
         );
+          //console.log("admindata", response.data);
           setadmin(response.data.admindata);
         } catch (err) {
           console.log("Error fetching user data:", err.response?.status || err.message);
         }
       };
       useEffect(() => {
-        fetchadminData();
+        const adminid=sessionStorage.getItem("adminid")
+        if(adminid){
+            fetchadminData(adminid);
+        }
       }, []);
       
     return (
@@ -62,7 +65,7 @@ const EditAdminPage = () => {
                                     <td className="px-4 py-3">
                                         <div className="flex h-12 items-center gap-2">
                                             <Link to="/layout/manage-admin"
-                                            >
+                                            state={{adminid:admin._id}}>
                                                 <button className="flex gap-1 rounded bg-blue-500 px-3 py-1 text-white">
                                                     <PencilLine size={16} /> Manage
                                                 </button>

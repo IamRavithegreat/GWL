@@ -1,9 +1,9 @@
 import { useEffect, useState } from "react";
 import { Footer } from "@/layouts/footer";
+import axios from "axios";
 import { toast } from "react-toastify";
 import { useAuth } from "../../contexts/auth";
 import { useLocation } from "react-router-dom";
-import API from "../../API/Api";
 
 const UpdateCustomer = () => {
     const location = useLocation();
@@ -36,7 +36,7 @@ const UpdateCustomer = () => {
             companyId: data.companyId
         };
         try {
-            await API.put(`/update-customer/${data.customerid}`, updatedData, {
+            const response = await axios.put(`http://localhost:4000/api/update-customer/${data.customerid}`, updatedData, {
                 headers: {
                     "Content-Type": "application/json",
                 },
@@ -53,15 +53,16 @@ const UpdateCustomer = () => {
             })
             await fetchalluser(); // Refresh the user list after update
             toast.success('Successfully updated!')
+            //console.log("Customer updated:", response.data);
         } catch (err) {
-            const message = err.response?.data?.message || "Signup failed";
+            const message = err.response?.data?.extradetails || err.response?.data?.message || "Signup failed";
             toast.error(message);
             console.error("update error:", err);
         }
     };
 
     useEffect(() => {
-        API.get(`/user/${LManager.LManagerCustId}`)
+        axios.get(`http://localhost:4000/api/user/${LManager.LManagerCustId}`)
             .then(res => {
                 setData({
                     firstname: res.data.userdata.firstname,
