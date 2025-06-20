@@ -1,9 +1,9 @@
 import React, { useEffect, useRef, useState } from "react";
 import { Footer } from "@/layouts/footer";
 import { toast } from "react-toastify";
-import axios from "axios";
 import { useAuth } from "../../contexts/auth";
 import { useLocation } from "react-router-dom";
+import API from "../../API/Api";
 
 const ManageEmployee = () => {
     const [employeesession, setemployeesession] = useState(sessionStorage.getItem("employeeid"));
@@ -41,7 +41,7 @@ const ManageEmployee = () => {
             phone: data.phone,
         };
         try {
-            const response = await axios.put(`http://localhost:4000/api/updatesingleemployee/${employeesession}`, updateData, {
+           await API.put(`/updatesingleemployee/${employeesession}`, updateData, {
                 headers: {
                     "Content-Type": "application/json",
                 },
@@ -57,7 +57,6 @@ const ManageEmployee = () => {
             });
             await fetchuserData();
             toast.success("employee updated successfully !");
-            //console.log(response);
         } catch (err) {
             const message = "updation failed";
             toast.error(message);
@@ -68,7 +67,7 @@ const ManageEmployee = () => {
 
     const getEmployee = async () => {
         try {
-            const response = await axios.get(`http://localhost:4000/api/employee/${employeeId}`)
+            const response = await API.get(`/employee/${employeeId}`)
             setdata({
                 firstname: response.data.employeedata.firstname,
                 lastname: response.data.employeedata.lastname,

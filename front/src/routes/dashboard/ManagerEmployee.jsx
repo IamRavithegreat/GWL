@@ -1,23 +1,22 @@
 import { Footer } from "@/layouts/footer";
 import { PencilLine, Trash } from "lucide-react";
-import { Link } from "react-router-dom";
 import { useAuth } from "../../contexts/auth";
 import { toast } from "react-toastify";
-import axios from "axios";
 import { useEffect, useState } from "react";
+import API from "../../API/Api";
 
 const ManagerEmployee = () => {
     const { employeedata, fetchallemployee } = useAuth();
     const softdeleteemployee = async (id) => {
         try {
-            const response = await axios.patch(
-                `http://localhost:4000/api/deleteemployee/${id}`,
+            await API.patch(
+                `/deleteemployee/${id}`,
                 null, // no request body
             );
             await fetchallemployee();
             toast.success("employee deleted Successfully!");
         } catch (err) {
-            const message = err.response?.data?.extradetails || err.response?.data?.message || "deletion failed";
+            const message = err.response?.data?.message || "deletion failed";
             toast.error(message);
             console.error("delete error:", err);
         }
@@ -25,7 +24,7 @@ const ManagerEmployee = () => {
     // approve employee
     const approveEmployee = async (id) => {
         try {
-            const response = await axios.put(`http://localhost:4000/api/approveEmp/${id}`);
+            const response = await API.put(`/approveEmp/${id}`);
             await fetchallemployee();
             toast.success(response.data.message); // use backend message directly
         } catch (err) {
@@ -36,7 +35,7 @@ const ManagerEmployee = () => {
     };
     const declineEmployee = async (id) => {
         try {
-            const response = await axios.put(`http://localhost:4000/api/rejectEmp/${id}`);
+            const response = await API.put(`/rejectEmp/${id}`);
             await fetchallemployee(); // or your function to refresh customer list
             toast.success(response.data.message); // Show success message from backend
         } catch (err) {
@@ -49,7 +48,7 @@ const ManagerEmployee = () => {
     const [request,setrequest]=useState([]);
     const getallrequest=async()=>{
     try{
-            const response=await axios.get('http://localhost:4000/api/allrequest');
+            const response=await API.get('/allrequest');
             setrequest(response.data.requests);
             console.log(response.data.requests);
         }
@@ -66,8 +65,7 @@ const ManagerEmployee = () => {
     
     const handleAction = async (id, approved) => {
     try{
-    const response=await axios.post(`http://localhost:4000/api/review/${id}`, { approved });
-    //console.log(response);
+    const response=await API.post(`/review/${id}`, { approved });
     toast.success(response.data.message);
     await getallrequest();
     await fetchallemployee();
@@ -133,11 +131,6 @@ const ManagerEmployee = () => {
                                                 >
                                                     <Trash size={16} /> Decline
                                                 </button>                                            
-                                                {/* <Link to={"/Managerlayout/update-employee"}>
-                                                    <button className="my-2 flex items-center gap-1 rounded bg-blue-500 px-3 py-1 text-white">
-                                                        <PencilLine size={16} /> Manage
-                                                    </button>
-                                                </Link> */}
                                                 <button onClick={() => softdeleteemployee(employee._id)}
                                                 className="my-2 flex items-center gap-1 rounded bg-red-500 px-4 py-1 text-white">
                                                     <Trash size={16} /> Delete

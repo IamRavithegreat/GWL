@@ -1,17 +1,15 @@
 import { Footer } from "@/layouts/footer";
-import { PencilLine, Trash } from "lucide-react";
-import { Link } from "react-router-dom";
 import { useAuth } from "../../contexts/auth";
 import { toast } from "react-toastify";
-import axios from "axios";
 import { useEffect, useState } from "react";
+import API from "../../API/Api";
 
 const Allcompany = () => {
     const { companydata, fetchallcompany } = useAuth();
     const softdeletecompany = async (id) => {
         try {
-            const response = await axios.patch(
-                `http://localhost:4000/api/softdelete-company/${id}`,
+            const response = await API.patch(
+                `/softdelete-company/${id}`,
                 null, // no request body
             );
             await fetchallcompany();
@@ -25,7 +23,7 @@ const Allcompany = () => {
     // approve company
     const approvecompany = async (id) => {
         try {
-            const response = await axios.put(`http://localhost:4000/api/approvecompany/${id}`);
+            const response = await API.put(`/approvecompany/${id}`);
             await fetchallcompany();
             toast.success(response.data.message); // use backend message directly
         } catch (err) {
@@ -37,7 +35,7 @@ const Allcompany = () => {
     // decline company
     const declinecompany = async (id) => {
         try {
-            const response = await axios.put(`http://localhost:4000/api/rejectcompany/${id}`);
+            const response = await API.put(`/rejectcompany/${id}`);
             await fetchallcompany(); // or your function to refresh customer list
             toast.success(response.data.message); // Show success message from backend
         } catch (err) {
@@ -50,7 +48,7 @@ const Allcompany = () => {
         const [request,setrequest]=useState([]);
         const getallrequest=async()=>{
         try{
-                const response=await axios.get('http://localhost:4000/api/allcompanyrequest');
+                const response=await API.get('/allcompanyrequest');
                 setrequest(response.data.requests);
                 console.log(response.data.requests);
             }
@@ -67,7 +65,7 @@ const Allcompany = () => {
         
         const handleAction = async (id, approved) => {
         try{
-        const response=await axios.post(`http://localhost:4000/api/reviewpoints/${id}`, { approved });
+        const response=await API.post(`/reviewpoints/${id}`, { approved });
         //console.log(response);
         toast.success(response.data.message);
         await getallrequest();

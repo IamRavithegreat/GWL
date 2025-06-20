@@ -1,5 +1,4 @@
 
-import { Truck, Gift,} from "lucide-react";
 import CountUp from "react-countup";
 import { MdDiscount } from "react-icons/md";
 import { RiBuilding2Fill } from "react-icons/ri";

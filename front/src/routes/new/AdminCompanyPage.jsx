@@ -3,14 +3,14 @@ import { PencilLine, Trash } from "lucide-react";
 import { Link } from "react-router-dom";
 import { useAuth } from "../../contexts/auth";
 import { toast } from "react-toastify";
-import axios from "axios";
+import API from "../../API/Api";
 
 const AdminCompanyPage = () => {
     const { companydata,fetchallcompany }=useAuth()
     const softdeletecompany = async (id) => {  
     try {
-        const response = await axios.patch(
-            `http://localhost:4000/api/softdelete-company/${id}`,
+         await API.patch(
+            `/softdelete-company/${id}`,
             null,  // no request body
         );
         await fetchallcompany(); 

@@ -4,9 +4,9 @@ import { useState } from "react";
 import { useAuth } from "../contexts/auth";
 import { useNavigate } from "react-router-dom";
 import { toast } from 'react-toastify';
-import axios from 'axios';
 import Swal from 'sweetalert2'
 import withReactContent from 'sweetalert2-react-content'
+import API from "../API/Api";
 const MySwal = withReactContent(Swal)
 
 function EmployeeLoginForm() {
@@ -53,9 +53,7 @@ function EmployeeLoginForm() {
     const handlesubmit = async (e) => {
         e.preventDefault();
         try {
-            const response = await axios.post("http://localhost:4000/api/loginEmployee", data);
-            //console.log(response.data);
-            //console.log("res from server:", response.data.extradetails);
+            const response = await API.post("/loginEmployee", data);
             storeemployeetoken(response.data.employeetoken);
             setData({
                 email: "",
@@ -64,7 +62,7 @@ function EmployeeLoginForm() {
             sessionStorage.setItem("employeeid",response.data.payload.employeeId);
             navigate("/Employeelayout");
         } catch (err) {
-            const message = err.response?.data?.extradetails || err.response?.data?.message || "Login failed";
+            const message = err.response?.data?.message || "Login failed";
             toast.error(message);
             console.log("login error:", err);
         }

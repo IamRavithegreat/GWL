@@ -1,17 +1,16 @@
 import { Footer } from "@/layouts/footer";
 import { PencilLine, Trash } from "lucide-react";
-import { Link } from "react-router-dom";
 import { useAuth } from "../../contexts/auth";
 import { toast } from "react-toastify";
-import axios from "axios";
 import { useEffect, useState } from "react";
+import API from "../../API/Api";
 
 const CompanyPage = () => {
     const { companydata, fetchallcompany } = useAuth();
     const softdeletecompany = async (id) => {
         try {
-            const response = await axios.patch(
-                `http://localhost:4000/api/softdelete-company/${id}`,
+            const response = await API.patch(
+                `/softdelete-company/${id}`,
                 null, // no request body
             );
             await fetchallcompany();
@@ -25,7 +24,7 @@ const CompanyPage = () => {
     // approve company
     const approvecompany = async (id) => {
         try {
-            const response = await axios.put(`http://localhost:4000/api/approvecompany/${id}`);
+            const response = await API.put(`/approvecompany/${id}`);
             await fetchallcompany();
             toast.success(response.data.message); // use backend message directly
         } catch (err) {
@@ -37,7 +36,7 @@ const CompanyPage = () => {
     // decline company
     const declinecompany = async (id) => {
         try {
-            const response = await axios.put(`http://localhost:4000/api/rejectcompany/${id}`);
+            const response = await API.put(`/rejectcompany/${id}`);
             await fetchallcompany(); // or your function to refresh customer list
             toast.success(response.data.message); // Show success message from backend
         } catch (err) {
@@ -50,7 +49,7 @@ const CompanyPage = () => {
         const [request,setrequest]=useState([]);
         const getallrequest=async()=>{
         try{
-                const response=await axios.get('http://localhost:4000/api/allcompanyrequest');
+                const response=await API.get('/allcompanyrequest');
                 setrequest(response.data.requests);
                 console.log(response.data.requests);
             }
@@ -67,8 +66,7 @@ const CompanyPage = () => {
         
         const handleAction = async (id, approved) => {
         try{
-        const response=await axios.post(`http://localhost:4000/api/reviewpoints/${id}`, { approved });
-        //console.log(response);
+        const response=await API.post(`/reviewpoints/${id}`, { approved });
         toast.success(response.data.message);
         await getallrequest();
         await fetchallcompany();
@@ -136,12 +134,6 @@ const CompanyPage = () => {
                                             >
                                                 <Trash size={16} /> Decline
                                             </button>
-
-                                            {/* <Link to={"/Managerlayout/update-company"}>
-                                                <button className="flex items-center gap-1 px-3 py-1 bg-blue-500 text-white rounded my-2">
-                                                        <PencilLine size={16} /> Manage
-                                                    </button> 
-                                            </Link> */}
                                             <button
                                                 onClick={() => softdeletecompany(company._id)}
                                                 className="my-2 flex items-center gap-1 rounded bg-red-500 px-4 py-1 text-white"

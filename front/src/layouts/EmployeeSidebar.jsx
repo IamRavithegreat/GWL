@@ -35,7 +35,6 @@ export const EmployeeSidebar = forwardRef(({ collapsed }, ref) => {
                         key={index}
                         className={cn("sidebar-group", collapsed && "md:items-center")}
                     >
-                        {/* <p className={cn("sidebar-group-title", collapsed && "md:w-[45px]")}>{navbarLink.title}</p> */}
                         {navbarLink.links.map((link,index) => (
                             <NavLink
                                 key={index}

@@ -6,7 +6,7 @@ import Rewards from "./Reward";
 import Points from "./Points";
 import { useAuth } from "../../contexts/auth";
 import { useEffect, useState } from "react";
-import axios from "axios";
+import API from "../../API/Api";
 
 const EmployeePage = () => {
     const { theme } = useTheme();
@@ -16,8 +16,7 @@ const EmployeePage = () => {
         const [offerdata, setofferdata] = useState([]);
         const fetchalloffer = async () => {
             try {
-                const response = await axios.get("http://localhost:4000/api/getallapprove-employee-offer");
-                //console.log(response.data);
+                const response = await API.get("/getallapprove-employee-offer");
                 setofferdata(response.data.offer);
             } catch (err) {
                 console.error(err);
@@ -31,8 +30,7 @@ const EmployeePage = () => {
         const [upcomingofferdata, setupcomingofferdata] = useState([]);
         const fetchallupcomingoffer = async () => {
             try {
-                const response = await axios.get("http://localhost:4000/api/getapproveupcoming-employee-offer");
-                //console.log(response.data);
+                const response = await API.get("/getapproveupcoming-employee-offer");
                 setupcomingofferdata(response.data.offer);
             } catch (err) {
                 console.error(err);
@@ -92,14 +90,6 @@ const EmployeePage = () => {
                                 <p>1. Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do elaborum.</p>
                                 <p>2. Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do elaborum.</p>
                                 <p>3. Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do elaborum.</p>
-                                {/* {singleemployee.notification?.map((notification, index) => (
-                                    <div key={index}>
-                                        <span>{index + 1}.</span>
-                                        <span className="mb-2 ml-2">
-                                            {notification.notificationDescription}
-                                        </span>
-                                    </div>
-                                ))} */}
                             </p>
                         </div>
                     </div>

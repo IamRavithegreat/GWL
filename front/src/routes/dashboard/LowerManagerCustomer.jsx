@@ -3,13 +3,13 @@ import { PencilLine, Trash } from "lucide-react";
 import { Link } from "react-router-dom";
 import { useAuth } from "../../contexts/auth";
 import { toast } from "react-toastify";
-import axios from "axios";
+import API from "../../API/Api";
 
 const LowerManagerCustomer = () => {
     const { customersdata, fetchalluser } = useAuth();
     const rejectCustomer = async (id) => {
         try {
-            const response = await axios.put(`http://localhost:4000/api/deletecustomer/${id}`);
+            const response = await API.put(`/deletecustomer/${id}`);
             await fetchalluser();
             toast.success(response.data.message); // use backend message directly
         } catch (err) {

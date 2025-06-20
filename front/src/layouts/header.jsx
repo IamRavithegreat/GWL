@@ -18,19 +18,6 @@ export const Header = ({ collapsed, setCollapsed }) => {
                 >
                     <ChevronsLeft className={collapsed && "rotate-180"} />
                 </button>
-                {/* <div className="input">
-                    <Search
-                        size={20}
-                        className="text-slate-300"
-                    />
-                    <input
-                        type="text"
-                        name="search"
-                        id="search"
-                        placeholder="Search..."
-                        className="w-full bg-transparent text-slate-900 outline-0 placeholder:text-slate-300 dark:text-slate-50"
-                    />
-                </div> */}
             </div>
             <div className="flex items-center gap-x-3">
                 <button
@@ -46,16 +33,6 @@ export const Header = ({ collapsed, setCollapsed }) => {
                         className="hidden dark:block"
                     />
                 </button>
-                {/* <button className="btn-ghost size-10">
-                    <Bell size={20} />
-                </button>
-                <button className="size-10 overflow-hidden rounded-full">
-                    <img
-                        src={profileImg}
-                        alt="profile image"
-                        className="size-full object-cover"
-                    />
-                </button> */}
             </div>
         </header>
     );

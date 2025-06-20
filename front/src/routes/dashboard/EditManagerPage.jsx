@@ -1,8 +1,6 @@
-import { useState, useEffect } from "react";
 import { Footer } from "@/layouts/footer";
 import { PencilLine } from "lucide-react";
 import { Link } from "react-router-dom";
-import axios from "axios";
 import { useAuth } from "../../contexts/auth";
 
 const EditManagerPage = () => {

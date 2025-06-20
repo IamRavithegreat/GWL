@@ -1,9 +1,9 @@
 import { Footer } from "@/layouts/footer";
 import { useEffect, useState } from "react";
 import { toast } from "react-toastify";
-import axios from "axios";
 import { useAuth } from "../../contexts/auth";
 import { useLocation } from "react-router-dom";
+import API from "../../API/Api";
 
 const AddOffers = () => {
     const { fetchalloffer } = useAuth()
@@ -34,13 +34,12 @@ const AddOffers = () => {
     const handlesubmit = async (e) => {
         e.preventDefault();
         try {
-            const response = await axios.put(`http://localhost:4000/api/update-offer/${data.offerid}`, updateoffer, {
+        await API.put(`/update-offer/${data.offerid}`, updateoffer, {
                 headers: {
                     "Content-Type": "application/json",
                 },
                 withCredentials: true,
             });
-            //console.log(response);
             setdata({
                 offerTitle: "",
                 offerDescription: "",
@@ -51,14 +50,14 @@ const AddOffers = () => {
             await fetchalloffer();
             toast.success("offer updated successfully !");
         } catch (err) {
-            const message = err.response?.data?.extradetails || err.response?.data?.message || "Login failed";
+            const message = err.response?.data?.message || "Login failed";
             toast.error(message);
             console.log("login error:", err);
         }
     };
 
     useEffect(() => {
-        axios.get(`http://localhost:4000/api/getSingleCustomerOffer/${LManagerAllOfferId}`)
+        API.get(`/getSingleCustomerOffer/${LManagerAllOfferId}`)
             .then(res =>
                 setdata
                     (

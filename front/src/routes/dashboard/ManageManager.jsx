@@ -1,15 +1,14 @@
 import React, { useEffect, useState } from "react";
 import { Footer } from "@/layouts/footer";
 import { useLocation } from "react-router-dom";
-import axios from "axios";
 import { toast } from "react-toastify";
 import { useAuth } from "../../contexts/auth";
+import API from "../../API/Api";
 
 const ManageManager = () => {
     const [manager, setManager] = useState({ firstname: "", lastname: "", email: "" })
     const location = useLocation();
     const { managerId, manager_type } = location.state;
-
     const { fetchlowermanagerData } = useAuth();
     const { fetchmanagerData } = useAuth();
 
@@ -28,7 +27,7 @@ const ManageManager = () => {
             const update_manager_url = manager_type == 'lower_manager' ? 'update-singleLM'
                 : manager_type == 'super_manager' ? 'superManagerProfile'
                     : '';
-            await axios.put(`http://localhost:4000/api/${update_manager_url}/${managerId}`, updatedData, {
+            await API.put(`/${update_manager_url}/${managerId}`, updatedData, {
                 headers: {
                     "Content-Type": "application/json",
                 },
@@ -56,8 +55,9 @@ const ManageManager = () => {
         try {
             const get_manager_url = manager_type == 'lower_manager' ? 'getlowermanager'
                 : manager_type == 'super_manager' ? 'manager'
+                : manager_type == 'admin' ? 'getAdmin'
                     : '';
-            const response = await axios.get(`http://localhost:4000/api/${get_manager_url}/${managerId}`);
+            const response = await API.get(`/${get_manager_url}/${managerId}`);
             console.log(response)
             setManager({
                 firstname: response.data.managerdata.firstname,

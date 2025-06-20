@@ -3,14 +3,14 @@ import { PencilLine, Trash } from "lucide-react";
 import { Link } from "react-router-dom";
 import { useAuth } from "../../contexts/auth";
 import { toast } from "react-toastify";
-import axios from "axios";
+import API from "../../API/Api";
 
 const LowerManagerCompanyPage = () => {
     const { companydata, fetchallcompany } = useAuth()
     const softdeletecompany = async (id) => {
         try {
-            const response = await axios.put(
-                `http://localhost:4000/api/deletecompany/${id}`,
+             await API.put(
+                `/deletecompany/${id}`,
             );
             await fetchallcompany();
             toast.success('company deleted Successfully!');

@@ -1,9 +1,9 @@
 import { Footer } from "@/layouts/footer";
 import { useEffect, useState } from "react";
 import { toast } from "react-toastify";
-import axios from "axios";
 import { useAuth } from "../../contexts/auth";
 import { useLocation } from "react-router-dom";
+import API from "../../API/Api";
 
 const EditEmployeeOffers = () => {
     const { fetchallemployeeoffer } = useAuth()
@@ -35,13 +35,12 @@ const EditEmployeeOffers = () => {
     const handlesubmit = async (e) => {
         e.preventDefault();
         try {
-            const response = await axios.put(`http://localhost:4000/api/update-employee-offer/${data.offerid}`, updateoffer, {
+            await API.put(`/update-employee-offer/${data.offerid}`, updateoffer, {
                 headers: {
                     "Content-Type": "application/json",
                 },
                 withCredentials: true,
             });
-            //console.log(response);
             setdata({
                 offerTitle: "",
                 offerDescription: "",
@@ -60,7 +59,7 @@ const EditEmployeeOffers = () => {
 
     if (LManagerAllOfferEmpId) {
         useEffect(() => {
-            axios.get(`http://localhost:4000/api/single-employee-offer/${LManagerAllOfferEmpId}`)
+            API.get(`/single-employee-offer/${LManagerAllOfferEmpId}`)
                 .then(res => setdata({
                     offerTitle: res.data.empOfferData.offerTitle,
                     offerDescription: res.data.empOfferData.offerDescription,

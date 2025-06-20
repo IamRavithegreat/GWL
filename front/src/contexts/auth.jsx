@@ -1,5 +1,5 @@
 import { createContext, useContext, useEffect, useState } from "react";
-import axios from "axios";
+import API from "../API/Api";
 
 export const AuthContext = createContext();
 export const AuthProvier = ({ children }) => {
@@ -23,7 +23,7 @@ export const AuthProvier = ({ children }) => {
     const [customersdata, setCustomersdata] = useState([]);
     const fetchalluser = async () => {
         try {
-            const response = await axios.get("http://localhost:4000/api/alluser");
+            const response = await API.get("/alluser");
             //console.log(response.data.customer);
             setCustomersdata(response.data.customer);
         } catch (err) {
@@ -39,7 +39,7 @@ export const AuthProvier = ({ children }) => {
     const [userid, setuserid] = useState(sessionStorage.getItem("id"))
     const fetchcustomerData = async () => {
         try {
-            const response = await axios.get(`http://localhost:4000/api/user/${userid}`,
+            const response = await API.get(`/user/${userid}`,
                 {
                     headers: {
                         "Content-Type": "application/json",
@@ -73,8 +73,7 @@ export const AuthProvier = ({ children }) => {
     const [employeedata, setemployeedata] = useState([]);
     const fetchallemployee = async () => {
         try {
-            const response = await axios.get("http://localhost:4000/api/allemployee");
-            //console.log(response.data.employees);
+            const response = await API.get("/allemployee");
             setemployeedata(response.data.employees);
         } catch (err) {
             console.error(err);
@@ -88,12 +87,11 @@ export const AuthProvier = ({ children }) => {
     const [singleemployee, setsingleemployee] = useState({});
     const fetchuserData = async () => {
         try {
-            const response = await axios.get(`http://localhost:4000/api/employee/${sessionStorage.getItem("employeeid")}`, {
+            const response = await API.get(`/employee/${sessionStorage.getItem("employeeid")}`, {
                 headers: {
                     "Content-Type": "application/json",
                 },
             });
-            //console.log(response.data);
             setsingleemployee(response.data.employeedata);
         } catch (err) {
             console.log("Error fetching user data:", err.response?.status || err.message);
@@ -120,12 +118,11 @@ export const AuthProvier = ({ children }) => {
     const [lowermanagerid, setlowermanagerid] = useState(sessionStorage.getItem("lowermanagerid"));
     const fetchlowermanagerData = async () => {
         try {
-            const response = await axios.get(`http://localhost:4000/api/getlowermanager/${lowermanagerid}`, {
+            const response = await API.get(`/getlowermanager/${lowermanagerid}`, {
                 headers: {
                     "Content-Type": "application/json",
                 },
             });
-            //console.log(response.data.managerdata);
             setlowermanager(response.data.managerdata);
         } catch (err) {
             console.log(err.response?.status || err.message);
@@ -139,7 +136,7 @@ export const AuthProvier = ({ children }) => {
     const [lowermanagerdata, setlowermanagerdata] = useState([]);
     const fetchallLowermanager = async () => {
         try {
-            const response = await axios.get("http://localhost:4000/api/allLowermanager");
+            const response = await API.get("/allLowermanager");
             //console.log(response.data.manager);
             setlowermanagerdata(response.data.manager);
         } catch (err) {
@@ -166,8 +163,7 @@ export const AuthProvier = ({ children }) => {
     const [managerdata, setmanagerdata] = useState([]);
     const fetchallmanager = async () => {
         try {
-            const response = await axios.get("http://localhost:4000/api/allmanager");
-            //console.log(response.data.manager);
+            const response = await API.get("/allmanager");
             setmanagerdata(response.data.manager);
         } catch (err) {
             console.error(err);
@@ -181,12 +177,11 @@ export const AuthProvier = ({ children }) => {
     const [manager, setmanager] = useState({});
     const fetchmanagerData = async () => {
         try {
-            const response = await axios.get(`http://localhost:4000/api/manager/${sessionStorage.getItem("managerid")}`, {
+            const response = await API.get(`/manager/${sessionStorage.getItem("managerid")}`, {
                 headers: {
                     "Content-Type": "application/json",
                 },
             });
-            //console.log(response.data);
             setmanager(response.data.managerdata);
         } catch (err) {
             console.log("Error fetching user data:", err.response?.status || err.message);
@@ -215,8 +210,7 @@ export const AuthProvier = ({ children }) => {
     const [offerdata, setofferdata] = useState([]);
     const fetchalloffer = async () => {
         try {
-            const response = await axios.get("http://localhost:4000/api/get-offer");
-            //console.log(response.data.offer);
+            const response = await API.get("/get-offer");
             setofferdata(response.data.offer);
         } catch (err) {
             console.error(err);
@@ -231,8 +225,7 @@ export const AuthProvier = ({ children }) => {
     const [employeeofferdata, setemployeeofferdata] = useState([]);
     const fetchallemployeeoffer = async () => {
         try {
-            const response = await axios.get("http://localhost:4000/api/getall-employee-offer");
-            //console.log(response.data.offer);
+            const response = await API.get("/getall-employee-offer");
             setemployeeofferdata(response.data.offer);
         } catch (err) {
             console.error(err);
@@ -248,8 +241,7 @@ export const AuthProvier = ({ children }) => {
     const [Upcomimgofferdata, setUpcomimgofferdata] = useState([]);
     const fetchupcomingalloffer = async () => {
         try {
-            const response = await axios.get("http://localhost:4000/api/getupcoming-offer");
-            //console.log(response.data.offer);
+            const response = await API.get("/getupcoming-offer");
             setUpcomimgofferdata(response.data.offer);
         } catch (err) {
             console.error(err);
@@ -263,8 +255,7 @@ export const AuthProvier = ({ children }) => {
     const [employeeUpcomimgofferdata, setemployeeUpcomimgofferdata] = useState([]);
     const fetchemployeeallupcomingoffer = async () => {
         try {
-            const response = await axios.get("http://localhost:4000/api/getupcoming-employee-offer");
-            //console.log(response.data.offer);
+            const response = await API.get("/getupcoming-employee-offer");
             setemployeeUpcomimgofferdata(response.data.offer);
         } catch (err) {
             console.error(err);
@@ -279,8 +270,7 @@ export const AuthProvier = ({ children }) => {
     const [companydata, setcompanydata] = useState([]);
     const fetchallcompany = async () => {
         try {
-            const response = await axios.get("http://localhost:4000/api/getallcompany");
-            //console.log(response.data.company);
+            const response = await API.get("/getallcompany");
             setcompanydata(response.data.company);
         } catch (err) {
             console.error(err);

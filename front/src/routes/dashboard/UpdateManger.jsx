@@ -1,9 +1,9 @@
 import React, { useRef, useState, useEffect } from "react";
 import { useLocation } from "react-router-dom";
 import { Footer } from "@/layouts/footer";
-import axios from "axios";
 import { toast } from "react-toastify";
 import { useAuth } from "../../contexts/auth";
+import API from "../../API/Api";
 const UpdateManger = () => {
     const { fetchlowermanagerData } = useAuth();
     const phone = useRef();
@@ -47,7 +47,7 @@ const UpdateManger = () => {
         };
 
         try {
-            const response = await axios.put(`http://localhost:4000/api/update-lowermanager/${data.managerid}`, updatedData, {
+          await API.put(`/update-lowermanager/${data.managerid}`, updatedData, {
                 headers: {
                     "Content-Type": "application/json",
                 },
@@ -63,7 +63,6 @@ const UpdateManger = () => {
             });
             await fetchlowermanagerData();
             toast.success("Successfully updated!");
-            //console.log("Customer updated:", response.data);
         } catch (err) {
             const message = err.response?.data?.message || "update failed";
             toast.error(message);
@@ -72,7 +71,7 @@ const UpdateManger = () => {
     };
 
     useEffect(() => {
-        axios.get(`http://localhost:4000/api/getlowermanager/${adminCustOfferId}`)
+        API.get(`/getlowermanager/${adminCustOfferId}`)
             .then(response => {
                 setData({
                     firstname: response.data.managerdata.firstname,

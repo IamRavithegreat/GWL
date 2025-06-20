@@ -3,14 +3,14 @@ import { PencilLine, Trash } from "lucide-react";
 import { Link } from "react-router-dom";
 import { useAuth } from "../../contexts/auth";
 import { toast } from "react-toastify";
-import axios from "axios";
-import { useEffect, useState } from "react";
+import API from "../../API/Api";
+
 const EditCustomerPage = () => {
     const {customersdata,fetchalluser}=useAuth()
     const softdeleteCustomer = async (id) => {  
     try {
-        const response = await axios.patch(
-            `http://localhost:4000/api/deleteuser/${id}`,
+         await API.patch(
+            `/deleteuser/${id}`,
             null,  // no request body
         );
         toast.success('Customer deleted Successfully!');

@@ -1,8 +1,8 @@
 import { Footer } from "@/layouts/footer";
 import { useState } from "react";
 import { toast } from "react-toastify";
-import axios from "axios";
 import { useAuth } from "../../contexts/auth";
+import API from "../../API/Api";
 const AddEmployeeOffers = () => {
     const { fetchallemployeeoffer, lowermanager } = useAuth();
     // employee data
@@ -23,8 +23,8 @@ const AddEmployeeOffers = () => {
     const employeehandlesubmit = async (e) => {
         e.preventDefault();
         try {
-            const response = await axios.post(
-                "http://localhost:4000/api/create-employee-offer",
+             await API.post(
+                "/create-employee-offer",
                 {
                     ...data,
                     manager:

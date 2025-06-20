@@ -3,8 +3,8 @@ import { PencilLine, Trash } from "lucide-react";
 import { Link } from "react-router-dom";
 import { useAuth } from "../../contexts/auth";
 import { toast } from "react-toastify";
-import axios from "axios";
 import { useState } from "react";
+import API from "../../API/Api";
 
 const LowerManagerAllupcomingoffer = () => {
     const { Upcomimgofferdata, fetchupcomingalloffer, employeeUpcomimgofferdata, fetchemployeeallupcomingoffer } = useAuth()
@@ -12,7 +12,7 @@ const LowerManagerAllupcomingoffer = () => {
     // delete upcomingoffer
     const deleteoffer = async (id) => {
         try {
-            const response = await axios.put(`http://localhost:4000/api/deleteupcomingoffer/${id}`);
+            const response = await API.put(`/deleteupcomingoffer/${id}`);
             await fetchupcomingalloffer();
             toast.success(response.data.message); // use backend message directly
         } catch (err) {
@@ -24,7 +24,7 @@ const LowerManagerAllupcomingoffer = () => {
     // delte employee upcoming offer
     const deleteemployeeoffer = async (id) => {
         try {
-            const response = await axios.put(`http://localhost:4000/api/deleteemployeeupcomingoffer/${id}`);
+            const response = await API.put(`/deleteemployeeupcomingoffer/${id}`);
             await fetchupcomingalloffer();
             toast.success(response.data.message); // use backend message directly
         } catch (err) {

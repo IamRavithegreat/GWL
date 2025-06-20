@@ -1,4 +1,3 @@
-
 import { FaSackDollar } from "react-icons/fa6";
 import { FaMoneyCheckAlt } from "react-icons/fa";
 import { FaUmbrellaBeach } from "react-icons/fa";
